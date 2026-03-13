@@ -6,16 +6,23 @@ RAP applies software engineering best practices — version control, automated t
 
 ## Quick Start
 
-### 1. Install the plugin system
+### 1. Bootstrap the plugin system
 
-Copy the four plugin management commands into your project's `.claude/commands/` directory:
+From your R project directory, run this one-liner to install the plugin management commands:
 
-- `plugin.marketplace-add.md`
-- `plugin.install.md`
-- `plugin.uninstall.md`
-- `plugin.list.md`
+```bash
+git clone --depth 1 https://github.com/ivyleavedtoadflax/RapSkill /tmp/rapskill \
+  && mkdir -p .claude/commands .claude/plugins \
+  && cp /tmp/rapskill/.claude/commands/plugin.*.md .claude/commands/ \
+  && cp /tmp/rapskill/.claude/plugins/*.json .claude/plugins/ \
+  && rm -rf /tmp/rapskill
+```
+
+This gives you four plugin management commands: `/plugin.marketplace-add`, `/plugin.install`, `/plugin.uninstall`, `/plugin.list`.
 
 ### 2. Register this repository as a plugin source
+
+In Claude Code, run:
 
 ```
 /plugin.marketplace-add https://github.com/ivyleavedtoadflax/RapSkill
