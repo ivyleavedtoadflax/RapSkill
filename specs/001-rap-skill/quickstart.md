@@ -2,14 +2,26 @@
 
 ## For Users (Installing the RAP Plugin)
 
-### 1. Register the Plugin Source
+### 1. Bootstrap the Plugin System
+
+From your R project directory, run this one-liner to install the plugin management commands:
+
+```bash
+git clone --depth 1 https://github.com/ivyleavedtoadflax/RapSkill /tmp/rapskill \
+  && mkdir -p .claude/commands .claude/plugins \
+  && cp /tmp/rapskill/.claude/commands/plugin.*.md .claude/commands/ \
+  && cp /tmp/rapskill/.claude/plugins/*.json .claude/plugins/ \
+  && rm -rf /tmp/rapskill
+```
+
+### 2. Register the Plugin Source
 
 In Claude Code, run:
 ```
 /plugin.marketplace-add https://github.com/ivyleavedtoadflax/RapSkill
 ```
 
-### 2. Install the RAP Plugin
+### 3. Install the RAP Plugin
 
 ```
 /plugin.install rap

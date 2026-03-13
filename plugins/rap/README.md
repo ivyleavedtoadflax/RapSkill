@@ -4,6 +4,18 @@ A Claude Code plugin that helps R analysts implement [Reproducible Analytical Pi
 
 ## Installation
 
+First, bootstrap the plugin system (one-time setup):
+
+```bash
+git clone --depth 1 https://github.com/ivyleavedtoadflax/RapSkill /tmp/rapskill \
+  && mkdir -p .claude/commands .claude/plugins \
+  && cp /tmp/rapskill/.claude/commands/plugin.*.md .claude/commands/ \
+  && cp /tmp/rapskill/.claude/plugins/*.json .claude/plugins/ \
+  && rm -rf /tmp/rapskill
+```
+
+Then in Claude Code:
+
 ```
 /plugin.marketplace-add https://github.com/ivyleavedtoadflax/RapSkill
 /plugin.install rap
