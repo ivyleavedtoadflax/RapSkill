@@ -1,0 +1,141 @@
+# {{PROJECT_NAME}} — Accessible Spreadsheet Output
+#
+# RAP principle: Statistical outputs must meet Government Analysis
+# Function accessibility standards. The {a11ytables} package generates
+# spreadsheets with cover sheets, tables of contents, and properly
+# structured data tables that comply with UK government guidance.
+#
+# See: https://co-analysis.github.io/a11ytables/
+
+#' Create an accessible spreadsheet publication
+#'
+#' @description Generates an ODS/XLSX workbook with cover sheet, table
+#'   of contents, notes, and data tables following government accessibility
+#'   standards.
+#'
+#' @param results A named list of analysis results. Each element should
+#'   be a tibble that will become a data table in the workbook.
+#' @param publication_title Character. Title of the statistical publication.
+#' @param publication_date Character. Publication date (e.g. "March 2026").
+#' @param output_path Character. File path for the output workbook.
+#'   Defaults to `here::here("output", "tables.xlsx")`.
+#'
+#' @return Invisibly returns the output file path.
+#'
+#' @examples
+#' \dontrun{
+#'   results <- list(summary = summary_table, detail = detail_table)
+#'   create_accessible_spreadsheet(results,
+#'     publication_title = "Annual Statistics Report",
+#'     publication_date = "March 2026")
+#' }
+#'
+#' @export
+create_accessible_spreadsheet <- function(
+  results,
+  publication_title = "{{PROJECT_NAME}} Statistical Tables",
+  publication_date = format(Sys.Date(), "%B %Y"),
+  output_path = here::here("output", "tables.xlsx")
+) {
+
+  logger::log_info("Creating accessible spreadsheet: {publication_title}")
+
+  # ── Define table properties ──────────────────────────────────────────
+
+  # Each tab in the workbook is described by a row in this tibble.
+  # tab_title: appears on the sheet tab
+  # sheet_type: "cover", "contents", "notes", or "tables"
+  # sheet_title: heading displayed at the top of the sheet
+
+  tab_titles <- c(
+    "Cover",
+    "Contents",
+    "Notes",
+    # TODO: Add one entry per data table in your publication
+    "Table_1"
+  )
+
+  sheet_types <- c(
+    "cover",
+    "contents",
+    "notes",
+    # TODO: One "tables" entry per data table
+    "tables"
+  )
+
+  sheet_titles <- c(
+    publication_title,
+    "Table of contents",
+    "Notes and definitions",
+    # TODO: Descriptive title for each data table
+    "Table 1: Summary statistics"
+  )
+
+  # ── Define sheet contents ────────────────────────────────────────────
+
+  # Cover sheet: publication metadata
+  cover <- tibble::tribble(
+    ~"subsection_title", ~"subsection_content",
+    "Published by",      "[Your organisation]",
+    "Publication date",  publication_date,
+    "Contact",           "[team-email@example.gov.uk]",
+    "Theme",             "Official Statistics",
+    "Frequency",         "[Quarterly / Annual]",
+    "Source",             "{{PROJECT_NAME}} RAP pipeline"
+  )
+
+  # Table of contents: auto-generated from tab_titles
+  contents <- tibble::tribble(
+    ~"Tab name",         ~"Sheet title",
+    "Notes",             "Notes and definitions",
+    "Table_1",           "Table 1: Summary statistics"
+  )
+
+  # Notes sheet: methodology and data quality
+  notes <- tibble::tribble(
+    ~"Note number", ~"Note text",
+    "[note 1]",     "[Describe methodology, data sources, or caveats]",
+    "[note 2]",     "[Describe any data quality issues or suppressions]"
+  )
+
+  # Data tables: use actual analysis results
+  # TODO: Replace with your actual results tables.
+  table_1 <- if ("summary_table" %in% names(results)) {
+    results$summary_table
+  } else {
+    tibble::tibble(
+      Category = character(),
+      Count = integer(),
+      Percentage = double()
+    )
+  }
+
+  # ── Build the a11ytable ──────────────────────────────────────────────
+
+  tables_list <- list(cover, contents, notes, table_1)
+
+  a11y_table <- a11ytables::create_a11ytable(
+    tab_titles   = tab_titles,
+    sheet_types  = sheet_types,
+    sheet_titles = sheet_titles,
+    tables       = tables_list
+  )
+
+  # ── Generate and save workbook ───────────────────────────────────────
+
+  workbook <- a11ytables::generate_workbook(a11y_table)
+
+  if (!dir.exists(dirname(output_path))) {
+    dir.create(dirname(output_path), recursive = TRUE)
+  }
+
+  openxlsx::saveWorkbook(
+    workbook,
+    file = output_path,
+    overwrite = TRUE
+  )
+
+  logger::log_info("Accessible spreadsheet saved to {output_path}")
+
+  invisible(output_path)
+}

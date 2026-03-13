@@ -1,0 +1,9 @@
+# {{PROJECT_NAME}} — Test Runner
+#
+# This file is executed by `devtools::test()` or `R CMD check`.
+# It loads the package and runs all tests in tests/testthat/.
+
+library(testthat)
+library({{PROJECT_NAME}})
+
+test_check("{{PROJECT_NAME}}")

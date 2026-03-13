@@ -1,0 +1,42 @@
+# {{PROJECT_NAME}} — Data Processing
+#
+# RAP principle: Processing logic is deterministic and idempotent.
+# Given the same raw input, this step always produces the same tidy
+# output. Avoid interactive filtering or manual edits — encode every
+# transformation as code.
+
+#' Process raw data into analysis-ready format
+#'
+#' @description Cleans and transforms raw source data. All cleaning
+#'   rules are coded explicitly so they can be reviewed and reproduced.
+#'
+#' @param raw_data A tibble of raw source data from [read_source_data()].
+#'
+#' @return A tibble of cleaned, analysis-ready data.
+#'
+#' @examples
+#' \dontrun{
+#'   raw <- read_source_data()
+#'   processed <- process_data(raw)
+#' }
+#'
+#' @export
+process_data <- function(raw_data) {
+
+  logger::log_info("Processing {nrow(raw_data)} rows")
+
+  processed <- raw_data |>
+    # TODO: Add your cleaning and transformation steps.
+    #
+    # Common RAP processing steps:
+    # - Rename columns to snake_case: dplyr::rename_with(snakecase::to_snake_case)
+    # - Filter to reporting period: dplyr::filter(date >= start, date <= end)
+    # - Handle missing values explicitly: tidyr::replace_na() or dplyr::coalesce()
+    # - Derive new variables: dplyr::mutate()
+    # - Validate expected ranges: stopifnot(all(value >= 0))
+    dplyr::filter(.data = _, TRUE)  # placeholder — passes all rows
+
+  logger::log_info("Processing complete: {nrow(processed)} rows retained")
+
+  processed
+}

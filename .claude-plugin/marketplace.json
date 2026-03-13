@@ -1,0 +1,16 @@
+{
+  "name": "rapskill",
+  "owner": {
+    "name": "RapSkill"
+  },
+  "plugins": [
+    {
+      "name": "rap",
+      "source": "./plugins/rap",
+      "description": "UK Government Reproducible Analytical Pipelines for R",
+      "version": "1.0.0",
+      "category": "development",
+      "homepage": "https://github.com/ivyleavedtoadflax/RapSkill"
+    }
+  ]
+}

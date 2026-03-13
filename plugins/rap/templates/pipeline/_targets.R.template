@@ -1,0 +1,98 @@
+# {{PROJECT_NAME}} — {targets} Pipeline Definition
+#
+# RAP principle: A build automation tool like {targets} ensures the
+# pipeline runs with minimal manual intervention (Silver requirement S1).
+# {targets} tracks dependencies between stages and only re-runs steps
+# whose inputs have changed, making re-execution fast and reliable.
+#
+# Run the pipeline:   targets::tar_make()
+# Visualise the DAG:  targets::tar_visnetwork()
+# Read a result:      targets::tar_read(analysis_results)
+#
+# See: https://books.ropensci.org/targets/
+
+library(targets)
+
+# ── Load project functions ─────────────────────────────────────────────
+# Source all R files in R/ so their functions are available to targets.
+
+tar_source("R")
+
+# ── Pipeline options ───────────────────────────────────────────────────
+# Packages listed here are loaded for every target.
+
+tar_option_set(
+  packages = c(
+    "dplyr",
+    "readr",
+    "tidyr",
+    "ggplot2",
+    "here",
+    "logger"
+  )
+)
+
+# ── Pipeline definition ───────────────────────────────────────────────
+# Each tar_target() defines a pipeline stage. {targets} automatically
+# determines the execution order from the dependency chain:
+#
+#   raw_data → clean_data → analysis_results → output
+#
+# If you change a function used by a target, only that target and its
+# downstream dependants will re-run on the next tar_make().
+
+list(
+
+  # Stage 1: Data ingestion
+  # Reads raw data from data/ directory.
+  # Depends on: read_source_data() in R/01_read_data.R
+  tar_target(
+    raw_data,
+    read_source_data()
+  ),
+
+  # Stage 2: Data processing
+  # Cleans and transforms raw data into analysis-ready format.
+  # Depends on: process_data() in R/02_process_data.R, raw_data target
+  tar_target(
+    clean_data,
+    process_data(raw_data)
+  ),
+
+  # Stage 3: Analysis
+  # Runs statistical analysis on processed data.
+  # Depends on: analyse_data() in R/03_analyse_data.R, clean_data target
+  tar_target(
+    analysis_results,
+    analyse_data(clean_data)
+  ),
+
+  # Stage 4: Output generation
+  # Produces publication outputs (spreadsheets, charts, reports).
+  # Depends on: create_output() in R/04_create_output.R, analysis_results target
+  tar_target(
+    output,
+    create_output(analysis_results)
+  )
+
+  # ── Add custom targets below ───────────────────────────────────────
+  #
+  # Examples:
+  #
+  # # Additional data source
+  # tar_target(
+  #   reference_data,
+  #   read_reference_data()
+  # ),
+  #
+  # # Branching: run analysis per region
+  # tar_target(
+  #   regions,
+  #   unique(clean_data$region)
+  # ),
+  # tar_target(
+  #   regional_results,
+  #   analyse_data(dplyr::filter(clean_data, region == regions)),
+  #   pattern = map(regions)
+  # )
+)
