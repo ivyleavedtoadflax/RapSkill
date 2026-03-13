@@ -1,0 +1,8 @@
+{
+  "name": "rap",
+  "version": "1.0.0",
+  "description": "UK Government Reproducible Analytical Pipelines for R",
+  "author": {
+    "name": "RapSkill"
+  }
+}
