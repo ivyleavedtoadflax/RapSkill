@@ -1,0 +1,21 @@
+name: rap
+version: 1.0.0
+description: UK Government Reproducible Analytical Pipelines for R
+author: RapSkill
+tags: [rap, r, statistics, reproducibility, government]
+commands:
+  - name: rap-init
+    file: skills/rap-init.md
+    description: Scaffold a RAP-compliant R project
+  - name: rap-check
+    file: skills/rap-check.md
+    description: Check RAP compliance level (Baseline/Silver/Gold)
+  - name: rap-output
+    file: skills/rap-output.md
+    description: Generate accessible statistical outputs
+  - name: rap-test
+    file: skills/rap-test.md
+    description: Set up testing and data validation
+  - name: rap-pipeline
+    file: skills/rap-pipeline.md
+    description: Configure {targets} build automation
