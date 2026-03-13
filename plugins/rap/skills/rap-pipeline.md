@@ -118,7 +118,36 @@ targets::tar_outdated()
 - **Auditability**: Results are cached with metadata for inspection
 ```
 
-### 7. RAP context
+### 7. Edge Case Handling
+
+Handle these situations gracefully:
+
+- **No R/ directory**: If `R/` does not exist, display:
+  ```
+  No R/ directory found. Run `/rap-init` to create the standard project structure,
+  or create R/ and add your pipeline functions before running /rap-pipeline.
+  ```
+
+- **No functions found in R/**: If R files exist but contain no function definitions (only scripts), warn:
+  ```
+  Your R files appear to be scripts rather than functions. {targets} works best
+  with functions. Consider refactoring your scripts into functions:
+    read_data <- function() { ... }
+  Then run /rap-pipeline again.
+  ```
+
+- **targets not installed**: If the user runs `tar_make()` and targets is not available:
+  ```
+  install.packages("targets")
+  ```
+
+- **Existing _targets.R**: Never overwrite without confirmation. Analyse the current pipeline and suggest improvements instead.
+
+- **DESCRIPTION missing**: Skip the DESCRIPTION update and note that targets should be installed manually.
+
+- **Circular dependencies detected**: If function analysis suggests circular dependencies, warn and suggest restructuring.
+
+### 8. RAP context
 
 End your response with:
 

@@ -145,7 +145,41 @@ To complete Baseline, you also need:
 5. Run `/rap-pipeline` to configure {targets} build automation
 ```
 
-### 7. RAP Context
+### 7. Edge Case Handling
+
+Handle these situations gracefully:
+
+- **Git not installed**: If `git init` fails with "command not found", display:
+  ```
+  Git is not installed. Install Git from https://git-scm.com/ then run `git init` manually.
+  Your project files have been created successfully — Git can be added later.
+  ```
+
+- **R not installed**: If `Rscript` is not available, skip `renv::init()` and display:
+  ```
+  R is not installed or not on PATH. Install R from https://cran.r-project.org/
+  After installing R, run: Rscript -e "renv::init(bare = TRUE)"
+  ```
+
+- **renv not installed**: If `renv::init()` fails with "there is no package called 'renv'", display:
+  ```
+  The {renv} package is not installed. Run in R:
+    install.packages("renv")
+    renv::init(bare = TRUE)
+  ```
+
+- **Permission errors**: If file creation fails, display the specific error and suggest checking directory permissions: `ls -la .`
+
+- **packrat detected**: If `packrat/` directory exists, warn:
+  ```
+  This project uses {packrat} for dependency management. Consider migrating
+  to {renv} which is its successor: https://rstudio.github.io/renv/articles/packrat.html
+  Skipping renv::init() to avoid conflicts.
+  ```
+
+- **Non-empty directory with conflicts**: If existing files would be overwritten, list them and ask for confirmation before proceeding. Never silently overwrite.
+
+### 8. RAP Context
 
 Include this brief context at the end of your response:
 

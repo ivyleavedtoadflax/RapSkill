@@ -131,7 +131,23 @@ For each FAIL or PARTIAL check, include specific remediation:
 | G2 | Add a GitHub Actions workflow: `usethis::use_github_action("check-standard")` |
 | G4 | Run `usethis::use_news_md()` to create NEWS.md |
 
-### 9. RAP context
+### 9. Edge Case Handling
+
+Handle these situations gracefully:
+
+- **No R/ directory**: If `R/` does not exist but `.R` files exist at the root, still run checks but note in S3 that the standard directory structure is not followed.
+
+- **Git not initialised**: If `.git/` does not exist, B2 FAILS. Guidance: "Run `git init` or `/rap-init` to initialise version control."
+
+- **packrat instead of renv**: If `packrat/packrat.lock` exists but `renv.lock` does not, mark S7 as PARTIAL: "Using {packrat} — consider migrating to {renv}."
+
+- **Non-standard test directory**: If `tests/` exists but not `tests/testthat/`, mark S6 as PARTIAL: "Test directory found but not using {testthat} framework."
+
+- **Multiple .Rproj files**: Use the first one found and note it.
+
+- **Large repositories**: If `R/` contains more than 50 files, summarise rather than listing every check detail.
+
+### 10. RAP context
 
 End your response with:
 

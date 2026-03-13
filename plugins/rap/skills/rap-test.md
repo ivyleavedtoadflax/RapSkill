@@ -168,7 +168,30 @@ or introduces unexpected values, these tests fail immediately rather
 than producing incorrect outputs.
 ```
 
-### 5. RAP context
+### 5. Edge Case Handling
+
+Handle these situations gracefully:
+
+- **No R/ directory or no functions found**: If `R/` is empty or contains no function definitions, create the testthat infrastructure but skip skeleton generation. Display:
+  ```
+  No R function files found in R/. Test infrastructure created.
+  Add functions to R/ then run /rap-test again to generate skeletons.
+  ```
+
+- **testthat not installed**: If the user tries to run tests and testthat is not installed, guide them:
+  ```
+  install.packages("testthat")
+  ```
+
+- **Non-standard test directory**: If `tests/` exists but uses a different framework (e.g. `tests/run_tests.R` without testthat), warn before creating testthat infrastructure and ask for confirmation.
+
+- **DESCRIPTION missing**: Skip the DESCRIPTION update and note that testthat should be installed manually.
+
+- **Functions with no parameters**: For functions like `get_config()` that take no arguments, adjust the skeleton to omit data validation patterns and focus on return value checks.
+
+- **Existing test files**: Never overwrite — always skip and list what was skipped.
+
+### 6. RAP context
 
 End your response with:
 

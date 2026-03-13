@@ -175,7 +175,25 @@ Follows the [Code of Practice for Statistics](https://code.statisticsauthority.g
 
 If a `DESCRIPTION` file exists, check whether the required packages are already listed under `Imports:` or `Suggests:`. If not, add them to the `Suggests:` section. Read the file, add the missing packages, and write it back.
 
-### 5. RAP context
+### 5. Edge Case Handling
+
+Handle these situations gracefully:
+
+- **Target file already exists**: If the output file (e.g. `R/create_spreadsheet.R`) already exists, warn and ask for confirmation before overwriting.
+
+- **Missing DESCRIPTION**: If no `DESCRIPTION` file exists, skip the package addition step and display:
+  ```
+  No DESCRIPTION file found. Add these packages manually:
+    install.packages(c("a11ytables", "openxlsx"))
+  ```
+
+- **reports/ directory missing** (for `report` subcommand): Create it automatically with `mkdir -p reports/`.
+
+- **a11ytables not on CRAN for user's R version**: Note that {a11ytables} requires R >= 4.1.0 and suggest checking their R version with `R --version`.
+
+- **No R/ directory**: If generating to `R/` but the directory doesn't exist, create it first.
+
+### 6. RAP context
 
 End your response with:
 
