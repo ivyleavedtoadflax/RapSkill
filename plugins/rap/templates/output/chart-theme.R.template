@@ -1,0 +1,176 @@
+# {{PROJECT_NAME}} — GOV.UK Chart Theme
+#
+# RAP principle: Charts in official statistics must meet Government
+# Analysis Function accessibility standards — colour-blind safe palettes,
+# sufficient contrast, clear labelling, and no reliance on colour alone
+# to convey meaning.
+#
+# This theme builds on {ggplot2} and draws from the {govstyle} package
+# and GOV.UK Design System colour guidance.
+# See: https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/
+
+# ── GOV.UK Colour Palette ──────────────────────────────────────────────
+#
+# Accessible colours from the Government Analysis Function guidance.
+# These have been tested for colour-blind safety and contrast ratios.
+
+#' GOV.UK accessible colour palette
+#'
+#' @description Returns a named vector of GOV.UK colours suitable for
+#'   data visualisation. Colours are ordered for maximum distinguishability
+#'   and are safe for the most common forms of colour blindness.
+#'
+#' @return A named character vector of hex colour codes.
+#'
+#' @export
+govuk_colours <- function() {
+  c(
+    "dark-blue"   = "#12436D",
+    "turquoise"   = "#28A197",
+    "dark-pink"   = "#801650",
+    "orange"      = "#F46A25",
+    "dark-grey"   = "#3D3D3D",
+    "light-purple" = "#A285D1"
+  )
+}
+
+#' GOV.UK ggplot2 colour scale (discrete)
+#'
+#' @param ... Additional arguments passed to [ggplot2::discrete_scale()].
+#'
+#' @return A ggplot2 colour scale.
+#'
+#' @export
+scale_colour_govuk <- function(...) {
+  ggplot2::scale_colour_manual(values = unname(govuk_colours()), ...)
+}
+
+#' GOV.UK ggplot2 fill scale (discrete)
+#'
+#' @param ... Additional arguments passed to [ggplot2::discrete_scale()].
+#'
+#' @return A ggplot2 fill scale.
+#'
+#' @export
+scale_fill_govuk <- function(...) {
+  ggplot2::scale_fill_manual(values = unname(govuk_colours()), ...)
+}
+
+# ── GOV.UK Chart Theme ────────────────────────────────────────────────
+
+#' GOV.UK-style ggplot2 theme
+#'
+#' @description A clean, accessible chart theme following Government
+#'   Analysis Function data visualisation guidance. Features minimal
+#'   chart junk, clear axis labels, and appropriate text sizing.
+#'
+#' @param base_size Numeric. Base font size in points. Default 12.
+#' @param base_family Character. Base font family. Default "sans".
+#'
+#' @return A ggplot2 theme object.
+#'
+#' @examples
+#' \dontrun{
+#'   library(ggplot2)
+#'   ggplot(mtcars, aes(wt, mpg)) +
+#'     geom_point() +
+#'     theme_govuk() +
+#'     scale_colour_govuk()
+#' }
+#'
+#' @export
+theme_govuk <- function(base_size = 12, base_family = "sans") {
+  ggplot2::theme_minimal(base_size = base_size, base_family = base_family) +
+    ggplot2::theme(
+      # Title and subtitle
+      plot.title = ggplot2::element_text(
+        size = base_size * 1.3,
+        face = "bold",
+        colour = "#0B0C0C",
+        margin = ggplot2::margin(b = 10)
+      ),
+      plot.subtitle = ggplot2::element_text(
+        size = base_size,
+        colour = "#505A5F",
+        margin = ggplot2::margin(b = 15)
+      ),
+      plot.caption = ggplot2::element_text(
+        size = base_size * 0.8,
+        colour = "#505A5F",
+        hjust = 0
+      ),
+
+      # Axes
+      axis.title = ggplot2::element_text(
+        size = base_size * 0.9,
+        colour = "#0B0C0C"
+      ),
+      axis.text = ggplot2::element_text(
+        size = base_size * 0.8,
+        colour = "#0B0C0C"
+      ),
+      axis.line.x = ggplot2::element_line(colour = "#B1B4B6", linewidth = 0.5),
+      axis.ticks = ggplot2::element_blank(),
+
+      # Grid: horizontal lines only (GOV.UK guidance)
+      panel.grid.major.y = ggplot2::element_line(colour = "#B1B4B6", linewidth = 0.25),
+      panel.grid.major.x = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank(),
+
+      # Legend
+      legend.position = "top",
+      legend.justification = "left",
+      legend.title = ggplot2::element_blank(),
+      legend.text = ggplot2::element_text(size = base_size * 0.8),
+
+      # Background
+      plot.background = ggplot2::element_rect(fill = "white", colour = NA),
+      panel.background = ggplot2::element_rect(fill = "white", colour = NA),
+
+      # Margins
+      plot.margin = ggplot2::margin(15, 15, 15, 15)
+    )
+}
+
+# ── Annotation Helper ─────────────────────────────────────────────────
+
+#' Add a statistical commentary annotation to a chart
+#'
+#' @description Adds a text annotation in GOV.UK style, useful for
+#'   highlighting key findings directly on the chart.
+#'
+#' @param label Character. The annotation text.
+#' @param x,y Numeric. Position of the annotation.
+#' @param size Numeric. Text size in mm. Default 3.5.
+#'
+#' @return A ggplot2 annotation layer.
+#'
+#' @export
+annotate_govuk <- function(label, x, y, size = 3.5) {
+  ggplot2::annotate(
+    "text",
+    x = x, y = y,
+    label = label,
+    hjust = 0,
+    size = size,
+    colour = "#0B0C0C",
+    family = "sans"
+  )
+}
+
+# ── Example Usage ──────────────────────────────────────────────────────
+#
+# library(ggplot2)
+#
+# ggplot(data, aes(x = year, y = count, colour = category)) +
+#   geom_line(linewidth = 1) +
+#   theme_govuk() +
+#   scale_colour_govuk() +
+#   labs(
+#     title = "Trend in [metric] over time",
+#     subtitle = "United Kingdom, 2020 to 2025",
+#     x = NULL,
+#     y = "Count",
+#     caption = "Source: [Department / Survey name]"
+#   ) +
+#   annotate_govuk("Peak in Q3 2023", x = 2023.5, y = 150)
