@@ -179,4 +179,11 @@ If a `DESCRIPTION` file exists, check whether the required packages are already 
 
 End your response with:
 
-> **Accessible outputs** are a key requirement of the UK Government Analysis Function. Statistical publications must be accessible to all users, including those using assistive technology. The {a11ytables} package and GOV.UK chart guidance help ensure compliance. See the [Government Analysis Function accessibility guidance](https://analysisfunction.civilservice.gov.uk/policy-store/making-analytical-publications-accessible/).
+> **Accessible outputs** are a key requirement of the UK Government Analysis Function. Statistical publications must be accessible to all users, including those using assistive technology. The {a11ytables} package and GOV.UK chart guidance help ensure compliance.
+>
+> **Learn more:**
+> - [Government Analysis Function accessibility guidance](https://analysisfunction.civilservice.gov.uk/policy-store/making-analytical-publications-accessible/)
+> - [UK Government Analysis Function RAP page](https://analysisfunction.civilservice.gov.uk/support/reproducible-analytical-pipelines/)
+> - [NHS RAP Community of Practice](https://nhsdigital.github.io/rap-community-of-practice/)
+> - [Building RAPs with R](https://raps-with-r.dev/)
+> - [RAP Companion](https://ukgovdatascience.github.io/rap_companion/)

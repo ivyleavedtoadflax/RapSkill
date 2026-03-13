@@ -173,3 +173,8 @@ than producing incorrect outputs.
 End your response with:
 
 > **Testing** is a Silver RAP requirement. The [NHS RAP Community of Practice](https://nhsdigital.github.io/rap-community-of-practice/training_resources/python/unit-testing/) recommends testing both analytical functions and input data. Well-tested pipelines catch errors early, making it safe to update and re-run analyses with confidence.
+>
+> **Learn more:**
+> - [UK Government Analysis Function RAP page](https://analysisfunction.civilservice.gov.uk/support/reproducible-analytical-pipelines/)
+> - [Building RAPs with R](https://raps-with-r.dev/)
+> - [RAP Companion](https://ukgovdatascience.github.io/rap_companion/)

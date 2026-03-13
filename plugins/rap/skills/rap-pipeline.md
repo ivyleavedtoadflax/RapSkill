@@ -122,4 +122,10 @@ targets::tar_outdated()
 
 End your response with:
 
-> **Build automation** is Silver RAP requirement S1 (minimal manual intervention). The `{targets}` package by Will Landau is the recommended pipeline tool for R, endorsed by the [NHS RAP Community of Practice](https://nhsdigital.github.io/rap-community-of-practice/training_resources/R/R-functions-and-packages/). It replaces manually running numbered scripts with a dependency-aware, cached pipeline. See the [targets manual](https://books.ropensci.org/targets/) for detailed guidance.
+> **Build automation** is Silver RAP requirement S1 (minimal manual intervention). The `{targets}` package by Will Landau is the recommended pipeline tool for R, endorsed by the [NHS RAP Community of Practice](https://nhsdigital.github.io/rap-community-of-practice/training_resources/R/R-functions-and-packages/). It replaces manually running numbered scripts with a dependency-aware, cached pipeline.
+>
+> **Learn more:**
+> - [targets manual](https://books.ropensci.org/targets/)
+> - [UK Government Analysis Function RAP page](https://analysisfunction.civilservice.gov.uk/support/reproducible-analytical-pipelines/)
+> - [Building RAPs with R](https://raps-with-r.dev/)
+> - [RAP Companion](https://ukgovdatascience.github.io/rap_companion/)

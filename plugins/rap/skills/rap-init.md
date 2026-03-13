@@ -149,4 +149,10 @@ To complete Baseline, you also need:
 
 Include this brief context at the end of your response:
 
-> **What is RAP?** Reproducible Analytical Pipelines apply software engineering practices to statistical production. Developed by the UK Government Analysis Function, RAP ensures official statistics are produced transparently, reproducibly, and efficiently. Learn more at the [RAP Companion](https://ukgovdatascience.github.io/rap_companion/) and the [NHS RAP Community of Practice](https://nhsdigital.github.io/rap-community-of-practice/).
+> **What is RAP?** Reproducible Analytical Pipelines apply software engineering practices to statistical production. Developed by the UK Government Analysis Function, RAP ensures official statistics are produced transparently, reproducibly, and efficiently.
+>
+> **Learn more:**
+> - [UK Government Analysis Function RAP page](https://analysisfunction.civilservice.gov.uk/support/reproducible-analytical-pipelines/)
+> - [NHS RAP Community of Practice](https://nhsdigital.github.io/rap-community-of-practice/)
+> - [Building RAPs with R](https://raps-with-r.dev/)
+> - [RAP Companion](https://ukgovdatascience.github.io/rap_companion/)

@@ -136,3 +136,7 @@ For each FAIL or PARTIAL check, include specific remediation:
 End your response with:
 
 > **RAP Maturity Levels** are defined by the [NHS RAP Community of Practice](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/levels_of_RAP/) based on the [UK Government Analysis Function RAP strategy](https://analysisfunction.civilservice.gov.uk/support/reproducible-analytical-pipelines/). Achieving higher levels improves reproducibility, transparency, and efficiency of official statistics production.
+>
+> **Learn more:**
+> - [Building RAPs with R](https://raps-with-r.dev/)
+> - [RAP Companion](https://ukgovdatascience.github.io/rap_companion/)
