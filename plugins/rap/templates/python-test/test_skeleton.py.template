@@ -1,0 +1,104 @@
+"""Tests for {{FILE_NAME}}
+
+RAP principle: Unit tests ensure that analytical functions produce
+correct, reproducible results. Tests should cover both the expected
+("happy path") behaviour and edge cases (empty data, missing values,
+unexpected types).
+"""
+
+import pandas as pd
+import pytest
+
+# from {{PROJECT_NAME_UNDERSCORE}}.{{MODULE_NAME}} import {{FUNCTION_NAME}}
+
+
+# -- Function output tests -----------------------------------------------------
+
+
+class TestStructure:
+    """Test that {{FUNCTION_NAME}} returns expected structure."""
+
+    def test_returns_dataframe(self, sample_raw_data):
+        # TODO: Replace with your actual function call.
+        # result = {{FUNCTION_NAME}}(sample_raw_data)
+        # assert isinstance(result, pd.DataFrame)
+        pass
+
+    def test_expected_columns(self, sample_raw_data):
+        # result = {{FUNCTION_NAME}}(sample_raw_data)
+        # expected_cols = {"col1", "col2"}
+        # assert expected_cols.issubset(result.columns)
+        pass
+
+    def test_row_count(self, sample_raw_data):
+        # result = {{FUNCTION_NAME}}(sample_raw_data)
+        # assert len(result) == expected_rows
+        pass
+
+
+class TestValues:
+    """Test that {{FUNCTION_NAME}} produces correct values."""
+
+    def test_known_output(self, sample_raw_data):
+        # TODO: Test with known input/output pairs.
+        # result = {{FUNCTION_NAME}}(known_input)
+        # assert result["total"].iloc[0] == expected_total
+        # assert result["mean_value"].iloc[0] == pytest.approx(expected_mean, abs=0.01)
+        pass
+
+
+# -- Edge case tests -----------------------------------------------------------
+
+
+class TestEdgeCases:
+    """Test {{FUNCTION_NAME}} handles edge cases gracefully."""
+
+    def test_empty_input(self, empty_dataframe):
+        # result = {{FUNCTION_NAME}}(empty_dataframe)
+        # assert len(result) == 0
+        pass
+
+    def test_missing_values(self):
+        # input_with_na = pd.DataFrame({
+        #     "id": [1, 2, 3],
+        #     "value": [10.0, None, 30.0],
+        # })
+        # result = {{FUNCTION_NAME}}(input_with_na)
+        # assert not result["value"].isna().any()
+        pass
+
+    def test_invalid_input(self):
+        # with pytest.raises(TypeError, match="must be a DataFrame"):
+        #     {{FUNCTION_NAME}}(None)
+        pass
+
+
+# -- Data validation patterns --------------------------------------------------
+#
+# Use these patterns to validate data at pipeline boundaries
+# (after ingestion, after processing).
+
+
+class TestDataValidation:
+    """Validate data schema and values."""
+
+    def test_expected_schema(self, sample_raw_data):
+        # data = read_source_data()
+        # expected_cols = ["id", "date", "region", "value"]
+        # missing = set(expected_cols) - set(data.columns)
+        # assert not missing, f"Missing columns: {missing}"
+        pass
+
+    def test_value_ranges(self, sample_raw_data):
+        # data = read_source_data()
+        # assert (data["value"] >= 0).all(), "Negative values found"
+        # assert (data["date"] >= pd.Timestamp("2020-01-01")).all()
+        # valid_regions = {"England", "Wales", "Scotland", "Northern Ireland"}
+        # assert set(data["region"]).issubset(valid_regions)
+        pass
+
+    def test_no_duplicates(self, sample_raw_data):
+        # data = read_source_data()
+        # duplicates = data.duplicated(subset=["id", "date"], keep=False)
+        # assert not duplicates.any(), f"{duplicates.sum()} duplicate rows"
+        pass

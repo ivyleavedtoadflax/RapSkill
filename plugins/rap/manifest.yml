@@ -1,21 +1,38 @@
 name: rap
-version: 1.0.0
-description: UK Government Reproducible Analytical Pipelines for R
+version: 2.0.0
+description: UK Government Reproducible Analytical Pipelines for R and Python
 author: RapSkill
-tags: [rap, r, statistics, reproducibility, government]
+tags: [rap, r, python, statistics, reproducibility, government]
 commands:
+  # R skills
   - name: rap-init
     file: skills/rap-init.md
     description: Scaffold a RAP-compliant R project
   - name: rap-check
     file: skills/rap-check.md
-    description: Check RAP compliance level (Baseline/Silver/Gold)
+    description: Check RAP compliance level (Baseline/Silver/Gold) for R
   - name: rap-output
     file: skills/rap-output.md
-    description: Generate accessible statistical outputs
+    description: Generate accessible statistical outputs for R
   - name: rap-test
     file: skills/rap-test.md
-    description: Set up testing and data validation
+    description: Set up testing and data validation for R
   - name: rap-pipeline
     file: skills/rap-pipeline.md
-    description: Configure {targets} build automation
+    description: Configure {targets} build automation for R
+  # Python skills
+  - name: rap-py-init
+    file: skills/rap-py-init.md
+    description: Scaffold a RAP-compliant Python project
+  - name: rap-py-check
+    file: skills/rap-py-check.md
+    description: Check RAP compliance level (Baseline/Silver/Gold) for Python
+  - name: rap-py-output
+    file: skills/rap-py-output.md
+    description: Generate accessible statistical outputs for Python
+  - name: rap-py-test
+    file: skills/rap-py-test.md
+    description: Set up pytest testing and data validation for Python
+  - name: rap-py-pipeline
+    file: skills/rap-py-pipeline.md
+    description: Configure build automation for Python (Makefile/DVC)

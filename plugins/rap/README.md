@@ -1,6 +1,6 @@
 # RAP Plugin for Claude Code
 
-A Claude Code plugin that helps R analysts implement [Reproducible Analytical Pipelines (RAP)](https://analysisfunction.civilservice.gov.uk/support/reproducible-analytical-pipelines/) based on the UK Government Analysis Function methodology.
+A Claude Code plugin that helps analysts implement [Reproducible Analytical Pipelines (RAP)](https://analysisfunction.civilservice.gov.uk/support/reproducible-analytical-pipelines/) in R and Python, based on the UK Government Analysis Function methodology.
 
 ## Installation
 
@@ -23,6 +23,8 @@ Then in Claude Code:
 
 ## Available Commands
 
+### R
+
 | Command | Description |
 |---------|-------------|
 | `/rap-init` | Scaffold a RAP-compliant R project with standard directory structure, configuration files, and starter templates |
@@ -30,6 +32,30 @@ Then in Claude Code:
 | `/rap-output` | Generate accessible statistical outputs: spreadsheets (a11ytables), GOV.UK-styled charts (govstyle), R Markdown reports |
 | `/rap-test` | Set up testthat infrastructure and generate starter test files for existing R functions |
 | `/rap-pipeline` | Configure {targets} build automation with a generated _targets.R reflecting your workflow |
+
+### Python
+
+| Command | Description |
+|---------|-------------|
+| `/rap-py-init` | Scaffold a RAP-compliant Python project with `src/` layout, `pyproject.toml`, and uv dependency management |
+| `/rap-py-check` | Audit your Python project against the three UK government RAP maturity levels (Baseline/Silver/Gold) |
+| `/rap-py-output` | Generate accessible statistical outputs: spreadsheets (gptables), GOV.UK matplotlib theme, Jupyter notebook or Quarto reports |
+| `/rap-py-test` | Set up pytest infrastructure and generate starter test files for existing Python functions |
+| `/rap-py-pipeline` | Configure build automation: Makefile (default) or DVC pipeline for complex data workflows |
+
+## Python Tooling
+
+The Python skills use modern, well-supported tools:
+
+| Purpose | Tool | Why |
+|---------|------|-----|
+| Dependency management | [uv](https://docs.astral.sh/uv/) | Fast, lockfile-based, PEP 621 compliant |
+| Testing | [pytest](https://docs.pytest.org/) | Universal Python testing standard |
+| Linting & formatting | [ruff](https://docs.astral.sh/ruff/) | Fast all-in-one linter and formatter |
+| Accessible spreadsheets | [gptables](https://gptables.readthedocs.io/) | GSS-maintained, UK gov standard |
+| Charts | [matplotlib](https://matplotlib.org/) | With GOV.UK accessible theme |
+| Reports | [Jupyter](https://jupyter.org/) / [Quarto](https://quarto.org/) | Notebook default, Quarto optional |
+| Build automation | Make / [DVC](https://dvc.org/) | Simple default, DVC for complex pipelines |
 
 ## RAP Maturity Levels
 
@@ -49,15 +75,15 @@ The UK government defines three levels of RAP compliance:
 - Comprehensive documentation including function docstrings
 - Well-organized code following standard directory structure
 - Reusable functions used where appropriate
-- Adherence to coding standards (lintr/styler)
-- Testing framework (testthat)
-- Dependency management (renv)
+- Adherence to coding standards
+- Testing framework
+- Dependency management
 - Automatic logging
 - Tidy data format for outputs
 
 ### Gold (all Silver requirements plus)
 
-- Code is fully packaged as an R package
+- Code is fully packaged
 - Automated testing via CI/CD (GitHub Actions)
 - Process runs on event-based triggers or schedule
 - Changes documented with changelog and semantic versioning

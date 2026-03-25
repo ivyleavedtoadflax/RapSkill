@@ -1,0 +1,51 @@
+"""{{PROJECT_NAME}} — Pipeline Runner
+
+Run the full analytical pipeline in sequence.
+
+Usage:
+    python run_pipeline.py
+
+RAP principle: The pipeline is executed by running a single command,
+ensuring reproducibility and minimal manual intervention.
+"""
+
+import logging
+from pathlib import Path
+
+from {{PROJECT_NAME_UNDERSCORE}}.read_data import read_source_data
+from {{PROJECT_NAME_UNDERSCORE}}.process_data import process_data
+from {{PROJECT_NAME_UNDERSCORE}}.analyse_data import analyse_data
+from {{PROJECT_NAME_UNDERSCORE}}.create_output import create_output
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s — %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
+
+
+def main():
+    """Run the full pipeline."""
+    logger.info("Starting pipeline: {{PROJECT_NAME}}")
+
+    data_dir = Path("data")
+    output_dir = Path("output")
+
+    # Stage 1: Data ingestion
+    raw_data = read_source_data(data_dir)
+
+    # Stage 2: Data processing
+    clean_data = process_data(raw_data)
+
+    # Stage 3: Analysis
+    results = analyse_data(clean_data)
+
+    # Stage 4: Output generation
+    create_output(results, output_dir)
+
+    logger.info("Pipeline complete")
+
+
+if __name__ == "__main__":
+    main()
