@@ -1,0 +1,6 @@
+# Claude Code local config
+.claude/settings.local.json
+
+# Speckit artifacts
+.specify/
+specs/
