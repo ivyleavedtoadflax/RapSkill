@@ -1,0 +1,142 @@
+"""{{PROJECT_NAME}} — GOV.UK Chart Theme
+
+RAP principle: Charts in official statistics must meet Government
+Analysis Function accessibility standards — colour-blind safe palettes,
+sufficient contrast, clear labelling, and no reliance on colour alone
+to convey meaning.
+
+This theme builds on matplotlib and draws from the GOV.UK Design System
+colour guidance.
+See: https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/
+"""
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+# -- GOV.UK Colour Palette -----------------------------------------------------
+#
+# Accessible colours from the Government Analysis Function guidance.
+# Tested for colour-blind safety and contrast ratios.
+
+GOVUK_COLOURS = {
+    "dark-blue": "#12436D",
+    "turquoise": "#28A197",
+    "dark-pink": "#801650",
+    "orange": "#F46A25",
+    "dark-grey": "#3D3D3D",
+    "light-purple": "#A285D1",
+}
+
+GOVUK_PALETTE = list(GOVUK_COLOURS.values())
+
+
+def govuk_colours() -> dict[str, str]:
+    """Return named GOV.UK colour palette for data visualisation.
+
+    Returns
+    -------
+    dict[str, str]
+        Mapping of colour names to hex codes.
+    """
+    return GOVUK_COLOURS.copy()
+
+
+# -- GOV.UK Chart Theme --------------------------------------------------------
+
+
+def theme_govuk(base_size: float = 12) -> None:
+    """Apply GOV.UK-style matplotlib theme globally.
+
+    Follows Government Analysis Function data visualisation guidance:
+    minimal chart junk, clear axis labels, horizontal gridlines only,
+    and appropriate text sizing.
+
+    Parameters
+    ----------
+    base_size : float
+        Base font size in points. Default 12.
+    """
+    mpl.rcParams.update(
+        {
+            # Font
+            "font.family": "sans-serif",
+            "font.size": base_size,
+            # Figure
+            "figure.facecolor": "white",
+            "figure.figsize": (8, 5),
+            "figure.dpi": 150,
+            # Axes
+            "axes.facecolor": "white",
+            "axes.edgecolor": "#B1B4B6",
+            "axes.linewidth": 0.5,
+            "axes.titlesize": base_size * 1.3,
+            "axes.titleweight": "bold",
+            "axes.titlecolor": "#0B0C0C",
+            "axes.labelsize": base_size * 0.9,
+            "axes.labelcolor": "#0B0C0C",
+            "axes.prop_cycle": mpl.cycler(color=GOVUK_PALETTE),
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            # Grid: horizontal lines only (GOV.UK guidance)
+            "axes.grid": True,
+            "axes.grid.axis": "y",
+            "grid.color": "#B1B4B6",
+            "grid.linewidth": 0.25,
+            # Ticks
+            "xtick.labelsize": base_size * 0.8,
+            "xtick.color": "#0B0C0C",
+            "xtick.major.size": 0,
+            "ytick.labelsize": base_size * 0.8,
+            "ytick.color": "#0B0C0C",
+            "ytick.major.size": 0,
+            # Legend
+            "legend.frameon": False,
+            "legend.fontsize": base_size * 0.8,
+            "legend.loc": "upper left",
+            # Lines
+            "lines.linewidth": 2,
+        }
+    )
+
+
+def annotate_govuk(
+    ax: plt.Axes, label: str, x: float, y: float, size: float = 10
+) -> None:
+    """Add a statistical commentary annotation to a chart.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        The axes to annotate.
+    label : str
+        The annotation text.
+    x, y : float
+        Position of the annotation.
+    size : float
+        Text size in points. Default 10.
+    """
+    ax.annotate(
+        label,
+        xy=(x, y),
+        fontsize=size,
+        color="#0B0C0C",
+        ha="left",
+        va="bottom",
+        family="sans-serif",
+    )
+
+
+# -- Example Usage -------------------------------------------------------------
+#
+# from chart_theme import theme_govuk, annotate_govuk
+#
+# theme_govuk()
+#
+# fig, ax = plt.subplots()
+# ax.plot(years, values, label="England")
+# ax.set_title("Trend in [metric] over time")
+# ax.set_xlabel(None)
+# ax.set_ylabel("Count")
+# ax.legend()
+# annotate_govuk(ax, "Peak in Q3 2023", x=2023.5, y=150)
+# fig.savefig("output/chart.png", bbox_inches="tight")

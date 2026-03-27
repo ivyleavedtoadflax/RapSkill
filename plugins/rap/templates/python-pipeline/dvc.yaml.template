@@ -1,0 +1,48 @@
+# {{PROJECT_NAME}} — DVC Pipeline Definition
+#
+# RAP principle: DVC provides dependency-aware pipeline automation with
+# data versioning, suitable for complex pipelines with large datasets.
+#
+# Usage:
+#   dvc repro          Run the full pipeline (only re-runs changed stages)
+#   dvc dag            Visualise the dependency graph
+#   dvc params diff    Compare parameters across runs
+#
+# Prerequisites:
+#   pip install dvc    (or uv add dvc)
+#   dvc init           (if not already initialised)
+#
+# See: https://dvc.org/doc/start/data-management/data-pipelines
+
+stages:
+  read_data:
+    cmd: python run_pipeline.py --stage read_data
+    deps:
+      - src/{{PROJECT_NAME_UNDERSCORE}}/read_data.py
+      - data/
+    outs:
+      - output/.raw_data.parquet
+
+  process_data:
+    cmd: python run_pipeline.py --stage process_data
+    deps:
+      - src/{{PROJECT_NAME_UNDERSCORE}}/process_data.py
+      - output/.raw_data.parquet
+    outs:
+      - output/.clean_data.parquet
+
+  analyse_data:
+    cmd: python run_pipeline.py --stage analyse_data
+    deps:
+      - src/{{PROJECT_NAME_UNDERSCORE}}/analyse_data.py
+      - output/.clean_data.parquet
+    outs:
+      - output/.analysis_meta.json
+
+  create_output:
+    cmd: python run_pipeline.py --stage create_output
+    deps:
+      - src/{{PROJECT_NAME_UNDERSCORE}}/create_output.py
+      - output/.analysis_meta.json
+    outs:
+      - output/summary.csv

@@ -1,0 +1,54 @@
+"""{{PROJECT_NAME}} — Output Generation
+
+RAP principle: Outputs are generated programmatically, never by
+manual copy-paste into spreadsheets or documents. Use gptables
+for accessible spreadsheets and Jupyter/Quarto for reports so that
+outputs meet Government Analysis Function accessibility standards.
+"""
+
+import logging
+from pathlib import Path
+
+logger = logging.getLogger(__name__)
+
+
+def create_output(results: dict, output_dir: Path = Path("output")) -> Path:
+    """Create publication outputs from analysis results.
+
+    Generates all outputs, writing them to the output directory.
+    Outputs are reproducible — running this function always overwrites
+    previous outputs with fresh versions.
+
+    Parameters
+    ----------
+    results : dict
+        Named dictionary of analysis results from :func:`analyse_data`.
+    output_dir : Path
+        Path to the output directory. Defaults to ``output/``.
+
+    Returns
+    -------
+    Path
+        The output directory path.
+    """
+    output_dir.mkdir(parents=True, exist_ok=True)
+    logger.info("Writing outputs to %s", output_dir)
+
+    # TODO: Replace with your actual output generation.
+    #
+    # Common RAP output patterns:
+    #
+    # 1. Accessible spreadsheet (ODS/XLSX) via gptables:
+    #    See /rap-py-output spreadsheet
+    #
+    # 2. CSV summary:
+    #    results["summary_table"].to_csv(output_dir / "summary.csv", index=False)
+    #
+    # 3. Jupyter notebook report:
+    #    See /rap-py-output report
+
+    # Placeholder: write summary table as CSV
+    results["summary_table"].to_csv(output_dir / "summary.csv", index=False)
+
+    logger.info("Outputs written to %s", output_dir)
+    return output_dir

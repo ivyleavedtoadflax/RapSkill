@@ -1,0 +1,43 @@
+"""{{PROJECT_NAME}} — Analysis
+
+RAP principle: Analysis code produces intermediate outputs (summary
+tables, model objects) that are passed to the output stage. Keep
+analysis logic separate from formatting so that results can be
+validated independently of their presentation.
+"""
+
+import logging
+
+import pandas as pd
+
+logger = logging.getLogger(__name__)
+
+
+def analyse_data(processed_data: pd.DataFrame) -> dict:
+    """Run statistical analysis on processed data.
+
+    Parameters
+    ----------
+    processed_data : pd.DataFrame
+        Cleaned data from :func:`process_data`.
+
+    Returns
+    -------
+    dict
+        Named dictionary of analysis results. At minimum contains
+        ``"summary_table"`` as a DataFrame.
+    """
+    logger.info("Analysing %d rows", len(processed_data))
+
+    # TODO: Replace with your actual analysis.
+    #
+    # Common RAP analysis patterns:
+    # - Group-level summaries: processed_data.groupby("region").agg(...)
+    # - Time series aggregation: processed_data.resample("Q", on="date").sum()
+    # - Percentage calculations: counts / counts.sum() * 100
+    # - Year-on-year change: series.diff(periods=4)
+
+    summary_table = pd.DataFrame({"n": [len(processed_data)]})
+
+    logger.info("Analysis complete")
+    return {"summary_table": summary_table}

@@ -1,0 +1,109 @@
+"""{{PROJECT_NAME}} — Pipeline Runner
+
+Run the full analytical pipeline in sequence, or a single stage.
+
+Usage:
+    python run_pipeline.py              # Run all stages
+    python run_pipeline.py --stage read_data
+    python run_pipeline.py --stage process_data
+    python run_pipeline.py --stage analyse_data
+    python run_pipeline.py --stage create_output
+
+RAP principle: The pipeline is executed by running a single command,
+ensuring reproducibility and minimal manual intervention.
+"""
+
+import argparse
+import json
+import logging
+from pathlib import Path
+
+import pandas as pd
+
+from {{PROJECT_NAME_UNDERSCORE}}.read_data import read_source_data
+from {{PROJECT_NAME_UNDERSCORE}}.process_data import process_data
+from {{PROJECT_NAME_UNDERSCORE}}.analyse_data import analyse_data
+from {{PROJECT_NAME_UNDERSCORE}}.create_output import create_output
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s — %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
+
+OUTPUT_DIR = Path("output")
+
+
+def _run_read_data():
+    """Stage 1: Data ingestion."""
+    raw = read_source_data(Path("data"))
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    raw.to_parquet(OUTPUT_DIR / ".raw_data.parquet")
+
+
+def _run_process_data():
+    """Stage 2: Data processing."""
+    raw = pd.read_parquet(OUTPUT_DIR / ".raw_data.parquet")
+    clean = process_data(raw)
+    clean.to_parquet(OUTPUT_DIR / ".clean_data.parquet")
+
+
+def _run_analyse_data():
+    """Stage 3: Analysis."""
+    clean = pd.read_parquet(OUTPUT_DIR / ".clean_data.parquet")
+    results = analyse_data(clean)
+    # Serialise DataFrames as parquet, scalars as JSON metadata
+    meta = {}
+    for key, value in results.items():
+        if isinstance(value, pd.DataFrame):
+            value.to_parquet(OUTPUT_DIR / f".result_{key}.parquet")
+            meta[key] = {"type": "dataframe", "file": f".result_{key}.parquet"}
+        else:
+            meta[key] = {"type": "scalar", "value": value}
+    (OUTPUT_DIR / ".analysis_meta.json").write_text(json.dumps(meta, indent=2))
+
+
+def _run_create_output():
+    """Stage 4: Output generation."""
+    meta = json.loads((OUTPUT_DIR / ".analysis_meta.json").read_text())
+    results = {}
+    for key, info in meta.items():
+        if info["type"] == "dataframe":
+            results[key] = pd.read_parquet(OUTPUT_DIR / info["file"])
+        else:
+            results[key] = info["value"]
+    create_output(results, OUTPUT_DIR)
+
+
+STAGES = {
+    "read_data": _run_read_data,
+    "process_data": _run_process_data,
+    "analyse_data": _run_analyse_data,
+    "create_output": _run_create_output,
+}
+
+
+def main():
+    """Run the full pipeline or a single stage."""
+    parser = argparse.ArgumentParser(description="{{PROJECT_NAME}} pipeline runner")
+    parser.add_argument(
+        "--stage",
+        choices=list(STAGES.keys()),
+        help="Run a single stage (used by Makefile/DVC)",
+    )
+    args = parser.parse_args()
+
+    if args.stage:
+        logger.info("Running stage: %s", args.stage)
+        STAGES[args.stage]()
+    else:
+        logger.info("Starting pipeline: {{PROJECT_NAME}}")
+        for name, fn in STAGES.items():
+            logger.info("Running stage: %s", name)
+            fn()
+        logger.info("Pipeline complete")
+
+
+if __name__ == "__main__":
+    main()

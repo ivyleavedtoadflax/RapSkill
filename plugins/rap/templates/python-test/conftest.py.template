@@ -1,0 +1,44 @@
+"""{{PROJECT_NAME}} — Shared Test Fixtures
+
+Pytest fixtures defined here are automatically available to all test files
+in the tests/ directory.
+
+RAP principle: Test fixtures provide consistent, known test data so that
+analytical functions can be validated against expected results.
+"""
+
+import pandas as pd
+import pytest
+
+
+@pytest.fixture
+def sample_raw_data():
+    """Minimal raw data for testing pipeline functions.
+
+    TODO: Replace with a representative sample of your actual data.
+    Keep it small (5-20 rows) but representative of the real schema.
+    """
+    return pd.DataFrame(
+        {
+            "id": [1, 2, 3, 4, 5],
+            "date": pd.to_datetime(
+                ["2024-01-01", "2024-02-01", "2024-03-01", "2024-04-01", "2024-05-01"]
+            ),
+            "region": ["England", "Wales", "Scotland", "Northern Ireland", "England"],
+            "value": [100.0, 200.0, 150.0, 175.0, 225.0],
+        }
+    )
+
+
+@pytest.fixture
+def empty_dataframe():
+    """Empty DataFrame for edge case testing."""
+    return pd.DataFrame()
+
+
+@pytest.fixture
+def tmp_output_dir(tmp_path):
+    """Temporary output directory for testing file writes."""
+    output_dir = tmp_path / "output"
+    output_dir.mkdir()
+    return output_dir

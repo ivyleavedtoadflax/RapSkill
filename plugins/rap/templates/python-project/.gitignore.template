@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data — raw data must not be committed (RAP principle)
+data/*.csv
+data/*.xlsx
+data/*.xls
+data/*.ods
+data/*.parquet
+data/*.json
+!data/README.md
+
+# Outputs — generated outputs are reproducible, not committed
+# Exclude file types but not the directory itself (DVC may place .dvc sidecar
+# files here if you use DVC for pipeline automation)
+output/*.csv
+output/*.xlsx
+output/*.ods
+output/*.html
+output/*.pdf
+output/*.png
+output/*.svg
+output/*.parquet
+output/.*.parquet
+output/.*.json
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment variables / secrets
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# DVC (if used)
+/data/*.dvc
+.dvc/tmp/

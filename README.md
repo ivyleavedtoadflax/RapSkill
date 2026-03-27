@@ -1,6 +1,6 @@
 # RapSkill
 
-A [Claude Code](https://claude.com/claude-code) plugin that helps R analysts implement **Reproducible Analytical Pipelines (RAP)** based on the [UK Government Analysis Function methodology](https://analysisfunction.civilservice.gov.uk/support/reproducible-analytical-pipelines/).
+A [Claude Code](https://claude.com/claude-code) plugin that helps analysts implement **Reproducible Analytical Pipelines (RAP)** in **R** and **Python**, based on the [UK Government Analysis Function methodology](https://analysisfunction.civilservice.gov.uk/support/reproducible-analytical-pipelines/).
 
 RAP applies software engineering best practices — version control, automated testing, dependency management, and build automation — to the production of official statistics, replacing manual spreadsheet processes with reproducible, auditable code.
 
@@ -8,17 +8,22 @@ RAP applies software engineering best practices — version control, automated t
 
 ### 1. Bootstrap the plugin system
 
-From your R project directory, run this one-liner to install the plugin management commands:
+Run this one-liner from your project directory. It downloads the four plugin management commands directly from GitHub — no cloning required, and it won't overwrite an existing plugin registry if you already have one set up.
 
 ```bash
-git clone --depth 1 https://github.com/ivyleavedtoadflax/RapSkill /tmp/rapskill \
-  && mkdir -p .claude/commands .claude/plugins \
-  && cp /tmp/rapskill/.claude/commands/plugin.*.md .claude/commands/ \
-  && cp /tmp/rapskill/.claude/plugins/*.json .claude/plugins/ \
-  && rm -rf /tmp/rapskill
+REPO="https://raw.githubusercontent.com/ivyleavedtoadflax/RapSkill/main" && \
+mkdir -p .claude/commands .claude/plugins && \
+for cmd in plugin.marketplace-add plugin.install plugin.uninstall plugin.list; do \
+  curl -fsSL "$REPO/.claude/commands/${cmd}.md" -o ".claude/commands/${cmd}.md"; \
+done && \
+[ -f .claude/plugins/sources.json ] || echo '[]' > .claude/plugins/sources.json && \
+[ -f .claude/plugins/registry.json ] || echo '[]' > .claude/plugins/registry.json && \
+echo "Plugin system ready."
 ```
 
 This gives you four plugin management commands: `/plugin.marketplace-add`, `/plugin.install`, `/plugin.uninstall`, `/plugin.list`.
+
+> **Requires**: `curl` (pre-installed on macOS and most Linux distributions; on Windows use Git Bash or WSL).
 
 ### 2. Register this repository as a plugin source
 
@@ -28,21 +33,26 @@ In Claude Code, run:
 /plugin.marketplace-add https://github.com/ivyleavedtoadflax/RapSkill
 ```
 
+This clones the repository temporarily, reads the plugin manifest, and registers it as an available source.
+
 ### 3. Install the RAP plugin
 
 ```
 /plugin.install rap
 ```
 
-This copies the five RAP skill files into your `.claude/commands/` directory, making them available as slash commands.
+This copies the 10 RAP skill files into your `.claude/commands/` directory, making them available as slash commands.
 
 ### 4. Create a RAP project
 
 ```
-/rap-init my-statistics-pipeline
+/rap-init my-statistics-pipeline       # R project
+/rap-py-init my-statistics-pipeline    # Python project
 ```
 
 ## Available Commands
+
+### R Commands
 
 | Command | Description |
 |---------|-------------|
@@ -52,9 +62,19 @@ This copies the five RAP skill files into your `.claude/commands/` directory, ma
 | `/rap-test` | Set up testthat infrastructure and generate test skeletons for existing R functions |
 | `/rap-pipeline` | Configure {targets} build automation with a dependency-aware `_targets.R` |
 
+### Python Commands
+
+| Command | Description |
+|---------|-------------|
+| `/rap-py-init [name]` | Scaffold a RAP-compliant Python project with `src/` layout, `pyproject.toml`, and uv dependency management |
+| `/rap-py-check` | Audit your Python project against the three UK government RAP maturity levels (Baseline, Silver, Gold) |
+| `/rap-py-output <type>` | Generate accessible statistical outputs: `spreadsheet` (gptables), `charts` (matplotlib GOV.UK theme), `report` (Jupyter notebook or Quarto) |
+| `/rap-py-test` | Set up pytest infrastructure and generate test skeletons for existing Python functions |
+| `/rap-py-pipeline [type]` | Configure build automation: `make` (default, Makefile) or `dvc` (for complex data pipelines) |
+
 ## RAP Maturity Levels
 
-The UK government defines three cumulative levels of RAP compliance. `/rap-check` audits your project against all 18 checks.
+The UK government defines three cumulative levels of RAP compliance. `/rap-check` and `/rap-py-check` audit your project against all 18 checks.
 
 ### Baseline (5 checks)
 
@@ -66,50 +86,63 @@ The UK government defines three cumulative levels of RAP compliance. `/rap-check
 
 ### Silver (9 additional checks)
 
-1. Outputs produced with minimal manual intervention
-2. Comprehensive documentation including function docstrings
-3. Well-organized code following standard directory structure
-4. Reusable functions used where appropriate
-5. Adherence to coding standards (lintr/styler)
-6. Testing framework (testthat)
-7. Dependency management (renv)
-8. Automatic logging
-9. Tidy data format for outputs
+| Requirement | R Tooling | Python Tooling |
+|-------------|-----------|----------------|
+| Minimal manual intervention | {targets} | Makefile / DVC |
+| Comprehensive documentation | roxygen2 | Docstrings (numpy-style) |
+| Standard directory structure | `R/` package layout | `src/` package layout |
+| Reusable functions | R functions | Python functions |
+| Coding standards | lintr / styler | ruff |
+| Testing framework | testthat | pytest |
+| Dependency management | renv | uv |
+| Automatic logging | {logger} | logging (stdlib) |
+| Tidy data format | tidyverse | pandas |
 
 ### Gold (4 additional checks)
 
-1. Code is fully packaged as an R package
-2. Automated testing via CI/CD (GitHub Actions)
-3. Process runs on event-based triggers or schedule
-4. Changes documented with changelog and semantic versioning
+| Requirement | R Tooling | Python Tooling |
+|-------------|-----------|----------------|
+| Fully packaged | R package (NAMESPACE) | Python package (pyproject.toml + build-system) |
+| CI/CD automation | GitHub Actions | GitHub Actions |
+| Event/schedule triggers | CI triggers | CI triggers |
+| Changelog & versioning | NEWS.md | CHANGELOG.md |
 
 ## Project Structure
 
 ```
 RapSkill/
 ├── .claude/
-│   ├── commands/           # Plugin system commands
+│   ├── commands/               # Plugin system commands
 │   │   ├── plugin.marketplace-add.md
 │   │   ├── plugin.install.md
 │   │   ├── plugin.uninstall.md
 │   │   └── plugin.list.md
-│   └── plugins/            # Plugin registry
+│   └── plugins/                # Plugin registry
 │       ├── sources.json
 │       └── registry.json
 ├── plugins/rap/
-│   ├── manifest.yml         # Plugin manifest
-│   ├── skills/              # RAP skill files (installed by /plugin.install)
-│   │   ├── rap-init.md
-│   │   ├── rap-check.md
-│   │   ├── rap-output.md
-│   │   ├── rap-test.md
-│   │   └── rap-pipeline.md
-│   └── templates/           # R project templates
-│       ├── r-project/       # Project scaffolding templates
-│       ├── output/          # Output generation templates
-│       ├── test/            # Testing templates
-│       └── pipeline/        # Build automation templates
-└── specs/                   # Feature specifications
+│   ├── manifest.yml            # Plugin manifest
+│   ├── skills/                 # RAP skill files (installed by /plugin.install)
+│   │   ├── rap-init/           # R project scaffolding
+│   │   ├── rap-check/          # R compliance audit
+│   │   ├── rap-output/         # R accessible outputs
+│   │   ├── rap-test/           # R testing setup
+│   │   ├── rap-pipeline/       # R build automation
+│   │   ├── rap-py-init/        # Python project scaffolding
+│   │   ├── rap-py-check/       # Python compliance audit
+│   │   ├── rap-py-output/      # Python accessible outputs
+│   │   ├── rap-py-test/        # Python testing setup
+│   │   └── rap-py-pipeline/    # Python build automation
+│   └── templates/
+│       ├── r-project/          # R project scaffolding templates
+│       ├── output/             # R output generation templates
+│       ├── test/               # R testing templates
+│       ├── pipeline/           # R build automation templates
+│       ├── python-project/     # Python project scaffolding templates
+│       ├── python-output/      # Python output generation templates
+│       ├── python-test/        # Python testing templates
+│       └── python-pipeline/    # Python build automation templates
+└── specs/                      # Feature specifications
 ```
 
 ## UK RAP Resources

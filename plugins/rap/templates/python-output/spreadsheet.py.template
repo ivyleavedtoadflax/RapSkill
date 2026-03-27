@@ -1,0 +1,108 @@
+"""{{PROJECT_NAME}} — Accessible Spreadsheet Output
+
+RAP principle: Statistical outputs must meet Government Analysis
+Function accessibility standards. The gptables package generates
+spreadsheets with cover sheets, tables of contents, and properly
+structured data tables that comply with UK government guidance.
+
+See: https://gptables.readthedocs.io/
+"""
+
+import logging
+from pathlib import Path
+
+import gptables
+import pandas as pd
+
+logger = logging.getLogger(__name__)
+
+
+def create_accessible_spreadsheet(
+    results: dict,
+    publication_title: str = "{{PROJECT_NAME}} Statistical Tables",
+    publication_date: str | None = None,
+    output_path: Path = Path("output") / "tables.xlsx",
+) -> Path:
+    """Create an accessible spreadsheet publication.
+
+    Generates an ODS/XLSX workbook with cover sheet, table of contents,
+    notes, and data tables following government accessibility standards.
+
+    Parameters
+    ----------
+    results : dict
+        Named dictionary of analysis results. Each value should be a
+        DataFrame that will become a data table in the workbook.
+    publication_title : str
+        Title of the statistical publication.
+    publication_date : str, optional
+        Publication date (e.g. "March 2026"). Defaults to current month/year.
+    output_path : Path
+        File path for the output workbook.
+
+    Returns
+    -------
+    Path
+        The output file path.
+    """
+    from datetime import date
+
+    if publication_date is None:
+        publication_date = date.today().strftime("%B %Y")
+
+    logger.info("Creating accessible spreadsheet: %s", publication_title)
+
+    # -- Define cover sheet metadata -------------------------------------------
+
+    cover = gptables.Cover(
+        title=publication_title,
+        subtitles=[
+            f"Published: {publication_date}",
+            "Source: {{PROJECT_NAME}} RAP pipeline",
+        ],
+    )
+
+    # -- Define notes ----------------------------------------------------------
+    # Notes are referenced by 1-based index in GPTable(notes_map=...) calls.
+
+    notes = [
+        "[Describe methodology, data sources, or caveats]",
+        "[Describe any data quality issues or suppressions]",
+    ]
+
+    # -- Define data tables ----------------------------------------------------
+    # TODO: Replace with your actual results tables.
+
+    if "summary_table" in results:
+        table_data = results["summary_table"]
+    else:
+        table_data = pd.DataFrame(
+            {"Category": pd.Series(dtype="str"), "Count": pd.Series(dtype="int")}
+        )
+
+    # -- Build GPTable ---------------------------------------------------------
+
+    table = gptables.GPTable(
+        table=table_data,
+        title="Table 1: Summary statistics",
+        subtitles=["[Geographic coverage], [time period]"],
+        units={"Count": "Number"},
+        scope="[United Kingdom]",
+        source="{{PROJECT_NAME}} RAP pipeline",
+        # Reference notes by 1-based index; the notes list is passed to write_workbook
+        notes_map={},
+    )
+
+    # -- Write workbook --------------------------------------------------------
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    gptables.write_workbook(
+        filename=output_path,
+        sheets={"Table_1": table},
+        cover=cover,
+        notes=notes,
+    )
+
+    logger.info("Accessible spreadsheet saved to %s", output_path)
+    return output_path

@@ -1,0 +1,48 @@
+"""{{PROJECT_NAME}} — Data Ingestion
+
+RAP principle: Data ingestion is separated from processing so that
+the raw-to-tidy boundary is explicit and auditable. Specify column
+types explicitly to prevent silent type coercion.
+"""
+
+import logging
+from pathlib import Path
+
+import pandas as pd
+
+logger = logging.getLogger(__name__)
+
+
+def read_source_data(data_dir: Path = Path("data")) -> pd.DataFrame:
+    """Read raw source data from the data directory.
+
+    Parameters
+    ----------
+    data_dir : Path
+        Path to the data directory. Defaults to ``data/``.
+
+    Returns
+    -------
+    pd.DataFrame
+        Raw source data, unmodified from its original form.
+    """
+    logger.info("Reading source data from %s", data_dir)
+
+    # TODO: Replace with your actual data source.
+    #
+    # Example: read a CSV with explicit column types
+    # raw = pd.read_csv(
+    #     data_dir / "input.csv",
+    #     dtype={
+    #         "id": "int64",
+    #         "region": "string",
+    #         "value": "float64",
+    #     },
+    #     parse_dates=["date"],
+    # )
+
+    # Placeholder: return an empty DataFrame
+    raw = pd.DataFrame()
+
+    logger.info("Read %d rows from source data", len(raw))
+    return raw
