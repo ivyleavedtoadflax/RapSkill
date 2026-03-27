@@ -8,7 +8,7 @@
       "name": "rap",
       "source": "./plugins/rap",
       "description": "UK Government Reproducible Analytical Pipelines for R and Python",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "category": "development",
       "homepage": "https://github.com/ivyleavedtoadflax/RapSkill"
     }
