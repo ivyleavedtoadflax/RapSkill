@@ -6,44 +6,25 @@ RAP applies software engineering best practices — version control, automated t
 
 ## Quick Start
 
-### 1. Bootstrap the plugin system
+Claude Code has a built-in plugin marketplace. No bootstrap or shell commands required.
 
-Run this one-liner from your project directory. It downloads the four plugin management commands directly from GitHub — no cloning required, and it won't overwrite an existing plugin registry if you already have one set up.
-
-```bash
-REPO="https://raw.githubusercontent.com/ivyleavedtoadflax/RapSkill/main" && \
-mkdir -p .claude/commands .claude/plugins && \
-for cmd in plugin.marketplace-add plugin.install plugin.uninstall plugin.list; do \
-  curl -fsSL "$REPO/.claude/commands/${cmd}.md" -o ".claude/commands/${cmd}.md"; \
-done && \
-[ -f .claude/plugins/sources.json ] || echo '[]' > .claude/plugins/sources.json && \
-[ -f .claude/plugins/registry.json ] || echo '[]' > .claude/plugins/registry.json && \
-echo "Plugin system ready."
-```
-
-This gives you four plugin management commands: `/plugin.marketplace-add`, `/plugin.install`, `/plugin.uninstall`, `/plugin.list`.
-
-> **Requires**: `curl` (pre-installed on macOS and most Linux distributions; on Windows use Git Bash or WSL).
-
-### 2. Register this repository as a plugin source
+### 1. Register this repository
 
 In Claude Code, run:
 
 ```
-/plugin.marketplace-add https://github.com/ivyleavedtoadflax/RapSkill
+/plugin marketplace add ivyleavedtoadflax/RapSkill
 ```
 
-This clones the repository temporarily, reads the plugin manifest, and registers it as an available source.
-
-### 3. Install the RAP plugin
+### 2. Install the RAP plugin
 
 ```
-/plugin.install rap
+/plugin install rap
 ```
 
-This copies the 10 RAP skill files into your `.claude/commands/` directory, making them available as slash commands.
+This installs 10 RAP skill files into your project, making them available as slash commands.
 
-### 4. Create a RAP project
+### 3. Create a RAP project
 
 ```
 /rap-init my-statistics-pipeline       # R project
@@ -111,18 +92,9 @@ The UK government defines three cumulative levels of RAP compliance. `/rap-check
 
 ```
 RapSkill/
-├── .claude/
-│   ├── commands/               # Plugin system commands
-│   │   ├── plugin.marketplace-add.md
-│   │   ├── plugin.install.md
-│   │   ├── plugin.uninstall.md
-│   │   └── plugin.list.md
-│   └── plugins/                # Plugin registry
-│       ├── sources.json
-│       └── registry.json
 ├── plugins/rap/
 │   ├── manifest.yml            # Plugin manifest
-│   ├── skills/                 # RAP skill files (installed by /plugin.install)
+│   ├── skills/                 # RAP skill files (installed by /plugin install)
 │   │   ├── rap-init/           # R project scaffolding
 │   │   ├── rap-check/          # R compliance audit
 │   │   ├── rap-output/         # R accessible outputs

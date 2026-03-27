@@ -4,29 +4,14 @@ A Claude Code plugin that helps analysts implement [Reproducible Analytical Pipe
 
 ## Installation
 
-### Step 1 — Bootstrap the plugin system (one-time setup)
-
-Run this in your project directory to download the plugin management commands directly from GitHub:
-
-```bash
-REPO="https://raw.githubusercontent.com/ivyleavedtoadflax/RapSkill/main" && \
-mkdir -p .claude/commands .claude/plugins && \
-for cmd in plugin.marketplace-add plugin.install plugin.uninstall plugin.list; do \
-  curl -fsSL "$REPO/.claude/commands/${cmd}.md" -o ".claude/commands/${cmd}.md"; \
-done && \
-[ -f .claude/plugins/sources.json ] || echo '[]' > .claude/plugins/sources.json && \
-[ -f .claude/plugins/registry.json ] || echo '[]' > .claude/plugins/registry.json && \
-echo "Plugin system ready."
-```
-
-> **Requires**: `curl` (pre-installed on macOS and most Linux distributions; on Windows use Git Bash or WSL).
-
-### Step 2 — Register and install in Claude Code
+In Claude Code, run:
 
 ```
-/plugin.marketplace-add https://github.com/ivyleavedtoadflax/RapSkill
-/plugin.install rap
+/plugin marketplace add ivyleavedtoadflax/RapSkill
+/plugin install rap
 ```
+
+No bootstrap or shell commands required — Claude Code's built-in plugin marketplace handles everything.
 
 ## Available Commands
 
