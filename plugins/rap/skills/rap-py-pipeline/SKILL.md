@@ -123,8 +123,8 @@ Write the result to `Makefile` in the project root.
 |--------|----------|------------|
 | .raw_data.parquet | read_source_data() | data/ source files |
 | .clean_data.parquet | process_data() | .raw_data.parquet |
-| .analysis_results.json | analyse_data() | .clean_data.parquet |
-| summary.csv | create_output() | .analysis_results.json |
+| .analysis_meta.json | analyse_data() | .clean_data.parquet |
+| summary.csv | create_output() | .analysis_meta.json |
 
 ### Running the pipeline
 
@@ -210,8 +210,8 @@ Write to `dvc.yaml` in the project root.
 |-------|---------|-------------|---------|
 | read_data | read_source_data() | data/, read_data.py | .raw_data.parquet |
 | process_data | process_data() | .raw_data.parquet, process_data.py | .clean_data.parquet |
-| analyse_data | analyse_data() | .clean_data.parquet, analyse_data.py | .analysis_results.json |
-| create_output | create_output() | .analysis_results.json, create_output.py | summary.csv |
+| analyse_data | analyse_data() | .clean_data.parquet, analyse_data.py | .analysis_meta.json |
+| create_output | create_output() | .analysis_meta.json, create_output.py | summary.csv |
 
 ### Running the pipeline
 

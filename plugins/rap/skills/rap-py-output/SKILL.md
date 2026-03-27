@@ -30,11 +30,11 @@ Usage: /rap-py-output <type>
 Available output types:
 
   spreadsheet  — Generate accessible spreadsheet code using gptables
-                 Creates: src/PROJECT_NAME/create_spreadsheet.py
+                 Creates: src/<project_name>/create_spreadsheet.py
                  Packages: gptables
 
   charts       — Generate GOV.UK chart theme for matplotlib
-                 Creates: src/PROJECT_NAME/chart_theme.py
+                 Creates: src/<project_name>/chart_theme.py
                  Packages: matplotlib
 
   report       — Generate publication report template
@@ -96,7 +96,7 @@ This generates ODS/XLSX workbooks with:
 2. Add your data tables to the `sheets` dictionary
 3. Call the function from `create_output.py`:
    ```python
-   from PROJECT_NAME.create_spreadsheet import create_accessible_spreadsheet
+   from <project_name>.create_spreadsheet import create_accessible_spreadsheet
    create_accessible_spreadsheet(results)
    ```
 
@@ -128,7 +128,7 @@ Provides:
 ### Usage
 
 ```python
-from PROJECT_NAME.chart_theme import theme_govuk, annotate_govuk
+from <project_name>.chart_theme import theme_govuk, annotate_govuk
 
 theme_govuk()
 

@@ -25,19 +25,19 @@ OUTPUT_DIR = output
 
 # Stage 1: Data ingestion
 $(OUTPUT_DIR)/.raw_data.parquet: $(SRC_DIR)/read_data.py $(wildcard $(DATA_DIR)/*)
-	$(PYTHON) -c "from {{PROJECT_NAME_UNDERSCORE}}.read_data import read_source_data; read_source_data().to_parquet('$(OUTPUT_DIR)/.raw_data.parquet')"
+	$(PYTHON) run_pipeline.py --stage read_data
 
 # Stage 2: Data processing
 $(OUTPUT_DIR)/.clean_data.parquet: $(SRC_DIR)/process_data.py $(OUTPUT_DIR)/.raw_data.parquet
-	$(PYTHON) -c "import pandas as pd; from {{PROJECT_NAME_UNDERSCORE}}.process_data import process_data; process_data(pd.read_parquet('$(OUTPUT_DIR)/.raw_data.parquet')).to_parquet('$(OUTPUT_DIR)/.clean_data.parquet')"
+	$(PYTHON) run_pipeline.py --stage process_data
 
 # Stage 3: Analysis
-$(OUTPUT_DIR)/.analysis_results.json: $(SRC_DIR)/analyse_data.py $(OUTPUT_DIR)/.clean_data.parquet
-	$(PYTHON) -c "import json, pandas as pd; from {{PROJECT_NAME_UNDERSCORE}}.analyse_data import analyse_data; r = analyse_data(pd.read_parquet('$(OUTPUT_DIR)/.clean_data.parquet')); json.dump({k: v.to_dict('records') for k, v in r.items()}, open('$(OUTPUT_DIR)/.analysis_results.json', 'w'))"
+$(OUTPUT_DIR)/.analysis_meta.json: $(SRC_DIR)/analyse_data.py $(OUTPUT_DIR)/.clean_data.parquet
+	$(PYTHON) run_pipeline.py --stage analyse_data
 
 # Stage 4: Output generation
-$(OUTPUT_DIR)/summary.csv: $(SRC_DIR)/create_output.py $(OUTPUT_DIR)/.analysis_results.json
-	$(PYTHON) -c "import json, pandas as pd; from {{PROJECT_NAME_UNDERSCORE}}.create_output import create_output; r = json.load(open('$(OUTPUT_DIR)/.analysis_results.json')); create_output({k: pd.DataFrame(v) for k, v in r.items()})"
+$(OUTPUT_DIR)/summary.csv: $(SRC_DIR)/create_output.py $(OUTPUT_DIR)/.analysis_meta.json
+	$(PYTHON) run_pipeline.py --stage create_output
 
 # -- Phony targets -------------------------------------------------------------
 

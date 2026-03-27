@@ -28,7 +28,18 @@ data/*.json
 !data/README.md
 
 # Outputs — generated outputs are reproducible, not committed
-output/
+# Exclude file types but not the directory itself (DVC may place .dvc sidecar
+# files here if you use DVC for pipeline automation)
+output/*.csv
+output/*.xlsx
+output/*.ods
+output/*.html
+output/*.pdf
+output/*.png
+output/*.svg
+output/*.parquet
+output/.*.parquet
+output/.*.json
 
 # Jupyter
 .ipynb_checkpoints/
@@ -43,3 +54,4 @@ Thumbs.db
 
 # DVC (if used)
 /data/*.dvc
+.dvc/tmp/

@@ -54,20 +54,21 @@ def create_accessible_spreadsheet(
 
     # -- Define cover sheet metadata -------------------------------------------
 
-    cover = {
-        "title": publication_title,
-        "subtitles": [
+    cover = gptables.Cover(
+        title=publication_title,
+        subtitles=[
             f"Published: {publication_date}",
             "Source: {{PROJECT_NAME}} RAP pipeline",
         ],
-    }
+    )
 
     # -- Define notes ----------------------------------------------------------
+    # Notes are referenced by 1-based index in GPTable(notes_map=...) calls.
 
-    notes = {
-        1: "[Describe methodology, data sources, or caveats]",
-        2: "[Describe any data quality issues or suppressions]",
-    }
+    notes = [
+        "[Describe methodology, data sources, or caveats]",
+        "[Describe any data quality issues or suppressions]",
+    ]
 
     # -- Define data tables ----------------------------------------------------
     # TODO: Replace with your actual results tables.
@@ -88,7 +89,8 @@ def create_accessible_spreadsheet(
         units={"Count": "Number"},
         scope="[United Kingdom]",
         source="{{PROJECT_NAME}} RAP pipeline",
-        notes=notes,
+        # Reference notes by 1-based index; the notes list is passed to write_workbook
+        notes_map={},
     )
 
     # -- Write workbook --------------------------------------------------------
@@ -99,6 +101,7 @@ def create_accessible_spreadsheet(
         filename=output_path,
         sheets={"Table_1": table},
         cover=cover,
+        notes=notes,
     )
 
     logger.info("Accessible spreadsheet saved to %s", output_path)

@@ -1,17 +1,22 @@
 # Plugin Flow Validation Report
 
-**Date**: 2026-03-13
+**Date**: 2026-03-25
 **Status**: PASS
 
 ## Manifest → Skill File Mapping
 
 | Command | Manifest Path | File Exists | Frontmatter Valid |
 |---------|--------------|-------------|-------------------|
-| rap-init | skills/rap-init.md | Yes | Yes |
-| rap-check | skills/rap-check.md | Yes | Yes |
-| rap-output | skills/rap-output.md | Yes | Yes |
-| rap-test | skills/rap-test.md | Yes | Yes |
-| rap-pipeline | skills/rap-pipeline.md | Yes | Yes |
+| rap-init | skills/rap-init/SKILL.md | Yes | Yes |
+| rap-check | skills/rap-check/SKILL.md | Yes | Yes |
+| rap-output | skills/rap-output/SKILL.md | Yes | Yes |
+| rap-test | skills/rap-test/SKILL.md | Yes | Yes |
+| rap-pipeline | skills/rap-pipeline/SKILL.md | Yes | Yes |
+| rap-py-init | skills/rap-py-init/SKILL.md | Yes | Yes |
+| rap-py-check | skills/rap-py-check/SKILL.md | Yes | Yes |
+| rap-py-output | skills/rap-py-output/SKILL.md | Yes | Yes |
+| rap-py-test | skills/rap-py-test/SKILL.md | Yes | Yes |
+| rap-py-pipeline | skills/rap-py-pipeline/SKILL.md | Yes | Yes |
 
 ## Plugin System Files
 
@@ -32,16 +37,17 @@
 
 2. `/plugin.install rap`
    - Finds "rap" in registered sources
-   - Clones repo, reads manifest, copies 5 skill files to `.claude/commands/`
+   - Clones repo, reads manifest, copies 10 skill files to `.claude/commands/`
    - Records installation in `.claude/plugins/registry.json`
 
 3. `/plugin.list`
    - Reads registry and sources, displays installed plugins and available sources
 
-4. User invokes `/rap-init`, `/rap-check`, `/rap-output`, `/rap-test`, `/rap-pipeline`
+4. User invokes R skills: `/rap-init`, `/rap-check`, `/rap-output`, `/rap-test`, `/rap-pipeline`
+5. User invokes Python skills: `/rap-py-init`, `/rap-py-check`, `/rap-py-output`, `/rap-py-test`, `/rap-py-pipeline`
 
-5. `/plugin.uninstall rap`
-   - Removes 5 skill files from `.claude/commands/`
+6. `/plugin.uninstall rap`
+   - Removes 10 skill files from `.claude/commands/`
    - Removes entry from `.claude/plugins/registry.json`
 
 ## Result

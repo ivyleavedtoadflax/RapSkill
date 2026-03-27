@@ -36,10 +36,16 @@ ls -A
 
 ### 3. Create directory structure
 
-Create the RAP project directories:
+Create the RAP project directories, substituting the actual package name for `PROJECT_NAME_UNDERSCORE`:
 
 ```bash
-mkdir -p src/PROJECT_NAME_UNDERSCORE data output tests reports
+mkdir -p src/<PROJECT_NAME_UNDERSCORE> data output tests reports
+```
+
+For example, for a project named `my-stats-pipeline`, run:
+
+```bash
+mkdir -p src/my_stats_pipeline data output tests reports
 ```
 
 ### 4. Write template files

@@ -1,7 +1,7 @@
 {
   "name": "rap",
-  "version": "1.0.0",
-  "description": "UK Government Reproducible Analytical Pipelines for R",
+  "version": "2.0.0",
+  "description": "UK Government Reproducible Analytical Pipelines for R and Python",
   "author": {
     "name": "RapSkill"
   }

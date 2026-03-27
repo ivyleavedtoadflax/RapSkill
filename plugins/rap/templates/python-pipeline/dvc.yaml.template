@@ -16,7 +16,7 @@
 
 stages:
   read_data:
-    cmd: python -c "from {{PROJECT_NAME_UNDERSCORE}}.read_data import read_source_data; read_source_data().to_parquet('output/.raw_data.parquet')"
+    cmd: python run_pipeline.py --stage read_data
     deps:
       - src/{{PROJECT_NAME_UNDERSCORE}}/read_data.py
       - data/
@@ -24,7 +24,7 @@ stages:
       - output/.raw_data.parquet
 
   process_data:
-    cmd: python -c "import pandas as pd; from {{PROJECT_NAME_UNDERSCORE}}.process_data import process_data; process_data(pd.read_parquet('output/.raw_data.parquet')).to_parquet('output/.clean_data.parquet')"
+    cmd: python run_pipeline.py --stage process_data
     deps:
       - src/{{PROJECT_NAME_UNDERSCORE}}/process_data.py
       - output/.raw_data.parquet
@@ -32,17 +32,17 @@ stages:
       - output/.clean_data.parquet
 
   analyse_data:
-    cmd: python -c "import json, pandas as pd; from {{PROJECT_NAME_UNDERSCORE}}.analyse_data import analyse_data; r = analyse_data(pd.read_parquet('output/.clean_data.parquet')); json.dump({k: v.to_dict('records') for k, v in r.items()}, open('output/.analysis_results.json', 'w'))"
+    cmd: python run_pipeline.py --stage analyse_data
     deps:
       - src/{{PROJECT_NAME_UNDERSCORE}}/analyse_data.py
       - output/.clean_data.parquet
     outs:
-      - output/.analysis_results.json
+      - output/.analysis_meta.json
 
   create_output:
-    cmd: python -c "import json, pandas as pd; from {{PROJECT_NAME_UNDERSCORE}}.create_output import create_output; r = json.load(open('output/.analysis_results.json')); create_output({k: pd.DataFrame(v) for k, v in r.items()})"
+    cmd: python run_pipeline.py --stage create_output
     deps:
       - src/{{PROJECT_NAME_UNDERSCORE}}/create_output.py
-      - output/.analysis_results.json
+      - output/.analysis_meta.json
     outs:
       - output/summary.csv

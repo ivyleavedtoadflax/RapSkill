@@ -8,17 +8,22 @@ RAP applies software engineering best practices — version control, automated t
 
 ### 1. Bootstrap the plugin system
 
-From your project directory, run this one-liner to install the plugin management commands:
+Run this one-liner from your project directory. It downloads the four plugin management commands directly from GitHub — no cloning required, and it won't overwrite an existing plugin registry if you already have one set up.
 
 ```bash
-git clone --depth 1 https://github.com/ivyleavedtoadflax/RapSkill /tmp/rapskill \
-  && mkdir -p .claude/commands .claude/plugins \
-  && cp /tmp/rapskill/.claude/commands/plugin.*.md .claude/commands/ \
-  && cp /tmp/rapskill/.claude/plugins/*.json .claude/plugins/ \
-  && rm -rf /tmp/rapskill
+REPO="https://raw.githubusercontent.com/ivyleavedtoadflax/RapSkill/main" && \
+mkdir -p .claude/commands .claude/plugins && \
+for cmd in plugin.marketplace-add plugin.install plugin.uninstall plugin.list; do \
+  curl -fsSL "$REPO/.claude/commands/${cmd}.md" -o ".claude/commands/${cmd}.md"; \
+done && \
+[ -f .claude/plugins/sources.json ] || echo '[]' > .claude/plugins/sources.json && \
+[ -f .claude/plugins/registry.json ] || echo '[]' > .claude/plugins/registry.json && \
+echo "Plugin system ready."
 ```
 
 This gives you four plugin management commands: `/plugin.marketplace-add`, `/plugin.install`, `/plugin.uninstall`, `/plugin.list`.
+
+> **Requires**: `curl` (pre-installed on macOS and most Linux distributions; on Windows use Git Bash or WSL).
 
 ### 2. Register this repository as a plugin source
 
@@ -28,13 +33,15 @@ In Claude Code, run:
 /plugin.marketplace-add https://github.com/ivyleavedtoadflax/RapSkill
 ```
 
+This clones the repository temporarily, reads the plugin manifest, and registers it as an available source.
+
 ### 3. Install the RAP plugin
 
 ```
 /plugin.install rap
 ```
 
-This copies the RAP skill files into your `.claude/commands/` directory, making them available as slash commands.
+This copies the 10 RAP skill files into your `.claude/commands/` directory, making them available as slash commands.
 
 ### 4. Create a RAP project
 
