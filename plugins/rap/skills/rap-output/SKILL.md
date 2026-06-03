@@ -65,7 +65,7 @@ Based on the subcommand, read the corresponding template, replace `{{PROJECT_NAM
 
 #### `spreadsheet`
 
-- **Template**: `plugins/rap/templates/output/spreadsheet.R.template`
+- **Template**: `${CLAUDE_PLUGIN_ROOT}/templates/output/spreadsheet.R.template`
 - **Target**: `R/create_spreadsheet.R`
 - **Packages to add**: `a11ytables`, `openxlsx`
 
@@ -99,7 +99,7 @@ Follows the Government Analysis Function guidance:
 
 #### `charts`
 
-- **Template**: `plugins/rap/templates/output/chart-theme.R.template`
+- **Template**: `${CLAUDE_PLUGIN_ROOT}/templates/output/chart-theme.R.template`
 - **Target**: `R/chart_theme.R`
 - **Packages to add**: `ggplot2`
 
@@ -136,7 +136,7 @@ Follows the Government Analysis Function guidance:
 
 #### `report`
 
-- **Template**: `plugins/rap/templates/output/report.Rmd.template`
+- **Template**: `${CLAUDE_PLUGIN_ROOT}/templates/output/report.Rmd.template`
 - **Target**: `reports/main_report.Rmd`
 - Create the `reports/` directory if it does not exist.
 - **Packages to add**: `rmarkdown`, `knitr`
@@ -193,7 +193,17 @@ Handle these situations gracefully:
 
 - **No R/ directory**: If generating to `R/` but the directory doesn't exist, create it first.
 
-### 6. RAP context
+### 6. Commit convention
+
+If you commit these changes (now, or when the user asks), use the [Conventional Commits](https://www.conventionalcommits.org/) format — `type(scope): description`. For new output code, prefer `feat`:
+
+```bash
+git commit -m "feat(output): add accessible spreadsheet generation"
+```
+
+Use the matching subcommand in the scope/description (`charts`, `report`). Consistent commit types keep history machine-readable and underpin the automated changelogs and semantic versioning expected at Gold RAP (G4).
+
+### 7. RAP context
 
 End your response with:
 

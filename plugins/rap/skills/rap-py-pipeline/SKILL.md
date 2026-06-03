@@ -98,7 +98,7 @@ Use Glob to find all `.py` files in the package directory (excluding `__init__.p
 
 #### 4c. Generate Makefile
 
-Read the template from `plugins/rap/templates/python-pipeline/Makefile.template`.
+Read the template from `${CLAUDE_PLUGIN_ROOT}/templates/python-pipeline/Makefile.template`.
 
 Replace `{{PROJECT_NAME}}`, `{{PROJECT_NAME_UNDERSCORE}}` with actual values.
 
@@ -189,7 +189,7 @@ Also check if DVC is initialised (`.dvc/` directory exists). If not, note that `
 
 #### 5c. Generate dvc.yaml
 
-Read the template from `plugins/rap/templates/python-pipeline/dvc.yaml.template`.
+Read the template from `${CLAUDE_PLUGIN_ROOT}/templates/python-pipeline/dvc.yaml.template`.
 
 Replace `{{PROJECT_NAME}}`, `{{PROJECT_NAME_UNDERSCORE}}` with actual values.
 
@@ -289,7 +289,17 @@ Handle these situations gracefully:
 
 - **run_pipeline.py already exists**: Note that the Makefile/DVC is an upgrade from the simple runner. Both can coexist — `run_pipeline.py` is the simple fallback, `make`/`dvc repro` is the dependency-aware alternative.
 
-### 8. RAP context
+### 8. Commit convention
+
+If you commit these changes (now, or when the user asks), use the [Conventional Commits](https://www.conventionalcommits.org/) format — `type(scope): description`. For build automation, prefer `build`:
+
+```bash
+git commit -m "build: add Makefile pipeline automation"
+```
+
+Use `dvc` in the description when generating a DVC pipeline. Consistent commit types keep history machine-readable and underpin the automated changelogs and semantic versioning expected at Gold RAP (G4).
+
+### 9. RAP context
 
 End your response with:
 

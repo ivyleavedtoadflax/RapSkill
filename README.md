@@ -40,7 +40,7 @@ This installs 10 RAP skill files into your project, making them available as sla
 | `/rap-init [name]` | Scaffold a RAP-compliant R project with standard directory structure, configuration files, and starter templates |
 | `/rap-check` | Audit your R project against the three UK government RAP maturity levels (Baseline, Silver, Gold) |
 | `/rap-output <type>` | Generate accessible statistical outputs: `spreadsheet` (a11ytables), `charts` (GOV.UK theme), `report` (R Markdown) |
-| `/rap-test` | Set up testthat infrastructure and generate test skeletons for existing R functions |
+| `/rap-test` | Set up testthat infrastructure and generate test skeletons for existing R functions. `/rap-test data-validation` generates data validation tests |
 | `/rap-pipeline` | Configure {targets} build automation with a dependency-aware `_targets.R` |
 
 ### Python Commands
@@ -50,7 +50,7 @@ This installs 10 RAP skill files into your project, making them available as sla
 | `/rap-py-init [name]` | Scaffold a RAP-compliant Python project with `src/` layout, `pyproject.toml`, and uv dependency management |
 | `/rap-py-check` | Audit your Python project against the three UK government RAP maturity levels (Baseline, Silver, Gold) |
 | `/rap-py-output <type>` | Generate accessible statistical outputs: `spreadsheet` (gptables), `charts` (matplotlib GOV.UK theme), `report` (Jupyter notebook or Quarto) |
-| `/rap-py-test` | Set up pytest infrastructure and generate test skeletons for existing Python functions |
+| `/rap-py-test` | Set up pytest infrastructure and generate test skeletons for existing Python functions. `/rap-py-test data-validation` generates data validation tests |
 | `/rap-py-pipeline [type]` | Configure build automation: `make` (default, Makefile) or `dvc` (for complex data pipelines) |
 
 ## RAP Maturity Levels
@@ -92,29 +92,28 @@ The UK government defines three cumulative levels of RAP compliance. `/rap-check
 
 ```
 RapSkill/
-├── plugins/rap/
-│   ├── manifest.yml            # Plugin manifest
-│   ├── skills/                 # RAP skill files (installed by /plugin install)
-│   │   ├── rap-init/           # R project scaffolding
-│   │   ├── rap-check/          # R compliance audit
-│   │   ├── rap-output/         # R accessible outputs
-│   │   ├── rap-test/           # R testing setup
-│   │   ├── rap-pipeline/       # R build automation
-│   │   ├── rap-py-init/        # Python project scaffolding
-│   │   ├── rap-py-check/       # Python compliance audit
-│   │   ├── rap-py-output/      # Python accessible outputs
-│   │   ├── rap-py-test/        # Python testing setup
-│   │   └── rap-py-pipeline/    # Python build automation
-│   └── templates/
-│       ├── r-project/          # R project scaffolding templates
-│       ├── output/             # R output generation templates
-│       ├── test/               # R testing templates
-│       ├── pipeline/           # R build automation templates
-│       ├── python-project/     # Python project scaffolding templates
-│       ├── python-output/      # Python output generation templates
-│       ├── python-test/        # Python testing templates
-│       └── python-pipeline/    # Python build automation templates
-└── specs/                      # Feature specifications
+└── plugins/rap/
+    ├── .claude-plugin/         # plugin.json manifest
+    ├── skills/                 # RAP skill files (installed by /plugin install)
+    │   ├── rap-init/           # R project scaffolding
+    │   ├── rap-check/          # R compliance audit
+    │   ├── rap-output/         # R accessible outputs
+    │   ├── rap-test/           # R testing setup
+    │   ├── rap-pipeline/       # R build automation
+    │   ├── rap-py-init/        # Python project scaffolding
+    │   ├── rap-py-check/       # Python compliance audit
+    │   ├── rap-py-output/      # Python accessible outputs
+    │   ├── rap-py-test/        # Python testing setup
+    │   └── rap-py-pipeline/    # Python build automation
+    └── templates/
+        ├── r-project/          # R project scaffolding templates
+        ├── output/             # R output generation templates
+        ├── test/               # R testing templates
+        ├── pipeline/           # R build automation templates
+        ├── python-project/     # Python project scaffolding templates
+        ├── python-output/      # Python output generation templates
+        ├── python-test/        # Python testing templates
+        └── python-pipeline/    # Python build automation templates
 ```
 
 ## UK RAP Resources

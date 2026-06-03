@@ -73,7 +73,7 @@ Based on the subcommand, read the corresponding template, replace `{{PROJECT_NAM
 
 #### `spreadsheet`
 
-- **Template**: `plugins/rap/templates/python-output/spreadsheet.py.template`
+- **Template**: `${CLAUDE_PLUGIN_ROOT}/templates/python-output/spreadsheet.py.template`
 - **Target**: `PKG_DIR/create_spreadsheet.py`
 - **Packages to add**: `gptables`
 
@@ -108,7 +108,7 @@ Follows the Government Analysis Function guidance:
 
 #### `charts`
 
-- **Template**: `plugins/rap/templates/python-output/chart_theme.py.template`
+- **Template**: `${CLAUDE_PLUGIN_ROOT}/templates/python-output/chart_theme.py.template`
 - **Target**: `PKG_DIR/chart_theme.py`
 - **Packages to add**: `matplotlib`
 
@@ -152,14 +152,14 @@ Check if the remaining arguments contain `quarto`. If so, use the Quarto templat
 
 **Jupyter notebook (default):**
 
-- **Template**: `plugins/rap/templates/python-output/report.ipynb.template`
+- **Template**: `${CLAUDE_PLUGIN_ROOT}/templates/python-output/report.ipynb.template`
 - **Target**: `reports/main_report.ipynb`
 - Create the `reports/` directory if it does not exist.
 - **Packages to add**: `jupyter`
 
 **Quarto (optional):**
 
-- **Template**: `plugins/rap/templates/python-output/report.qmd.template`
+- **Template**: `${CLAUDE_PLUGIN_ROOT}/templates/python-output/report.qmd.template`
 - **Target**: `reports/main_report.qmd`
 - Create the `reports/` directory if it does not exist.
 - **Packages to add**: None (Quarto CLI is installed separately)
@@ -253,7 +253,17 @@ Handle these situations gracefully:
 
 - **gptables version compatibility**: Note that gptables requires Python >= 3.8 and suggest checking their Python version with `python --version`.
 
-### 7. RAP context
+### 7. Commit convention
+
+If you commit these changes (now, or when the user asks), use the [Conventional Commits](https://www.conventionalcommits.org/) format — `type(scope): description`. For new output code, prefer `feat`:
+
+```bash
+git commit -m "feat(output): add accessible spreadsheet generation"
+```
+
+Use the matching subcommand in the scope/description (`charts`, `report`). Consistent commit types keep history machine-readable and underpin the automated changelogs and semantic versioning expected at Gold RAP (G4).
+
+### 8. RAP context
 
 End your response with:
 

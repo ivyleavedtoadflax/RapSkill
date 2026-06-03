@@ -56,7 +56,7 @@ Use Glob to find all `.R` files in `R/`. For each file:
 
 ### 4. Generate _targets.R
 
-Read the template from `plugins/rap/templates/pipeline/_targets.R.template`.
+Read the template from `${CLAUDE_PLUGIN_ROOT}/templates/pipeline/_targets.R.template`.
 
 Replace `{{PROJECT_NAME}}` with the project name.
 
@@ -147,7 +147,17 @@ Handle these situations gracefully:
 
 - **Circular dependencies detected**: If function analysis suggests circular dependencies, warn and suggest restructuring.
 
-### 8. RAP context
+### 8. Commit convention
+
+If you commit these changes (now, or when the user asks), use the [Conventional Commits](https://www.conventionalcommits.org/) format — `type(scope): description`. For build automation, prefer `build`:
+
+```bash
+git commit -m "build: add {targets} pipeline automation"
+```
+
+Consistent commit types keep history machine-readable and underpin the automated changelogs and semantic versioning expected at Gold RAP (G4).
+
+### 9. RAP context
 
 End your response with:
 

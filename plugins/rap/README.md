@@ -21,8 +21,8 @@ No bootstrap or shell commands required — Claude Code's built-in plugin market
 |---------|-------------|
 | `/rap-init` | Scaffold a RAP-compliant R project with standard directory structure, configuration files, and starter templates |
 | `/rap-check` | Audit your R project against the three UK government RAP maturity levels (Baseline/Silver/Gold) |
-| `/rap-output` | Generate accessible statistical outputs: spreadsheets (a11ytables), GOV.UK-styled charts (govstyle), R Markdown reports |
-| `/rap-test` | Set up testthat infrastructure and generate starter test files for existing R functions |
+| `/rap-output` | Generate accessible statistical outputs: spreadsheets (a11ytables), GOV.UK-styled ggplot2 charts, R Markdown reports |
+| `/rap-test` | Set up testthat infrastructure and generate starter test files for existing R functions (`data-validation` subcommand generates data validation tests) |
 | `/rap-pipeline` | Configure {targets} build automation with a generated _targets.R reflecting your workflow |
 
 ### Python
@@ -32,7 +32,7 @@ No bootstrap or shell commands required — Claude Code's built-in plugin market
 | `/rap-py-init` | Scaffold a RAP-compliant Python project with `src/` layout, `pyproject.toml`, and uv dependency management |
 | `/rap-py-check` | Audit your Python project against the three UK government RAP maturity levels (Baseline/Silver/Gold) |
 | `/rap-py-output` | Generate accessible statistical outputs: spreadsheets (gptables), GOV.UK matplotlib theme, Jupyter notebook or Quarto reports |
-| `/rap-py-test` | Set up pytest infrastructure and generate starter test files for existing Python functions |
+| `/rap-py-test` | Set up pytest infrastructure and generate starter test files for existing Python functions (`data-validation` subcommand generates data validation tests) |
 | `/rap-py-pipeline` | Configure build automation: Makefile (default) or DVC pipeline for complex data workflows |
 
 ## Python Tooling
