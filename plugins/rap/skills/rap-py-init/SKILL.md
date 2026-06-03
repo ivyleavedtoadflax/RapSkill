@@ -54,16 +54,16 @@ For each template file listed below, read the template from the plugin's templat
 
 | Template Source | Target Path |
 |----------------|-------------|
-| `plugins/rap/templates/python-project/pyproject.toml.template` | `pyproject.toml` |
-| `plugins/rap/templates/python-project/README.md.template` | `README.md` |
-| `plugins/rap/templates/python-project/.gitignore.template` | `.gitignore` |
-| `plugins/rap/templates/python-project/run_pipeline.py.template` | `run_pipeline.py` |
-| `plugins/rap/templates/python-project/src/__init__.py.template` | `src/PROJECT_NAME_UNDERSCORE/__init__.py` |
-| `plugins/rap/templates/python-project/src/read_data.py.template` | `src/PROJECT_NAME_UNDERSCORE/read_data.py` |
-| `plugins/rap/templates/python-project/src/process_data.py.template` | `src/PROJECT_NAME_UNDERSCORE/process_data.py` |
-| `plugins/rap/templates/python-project/src/analyse_data.py.template` | `src/PROJECT_NAME_UNDERSCORE/analyse_data.py` |
-| `plugins/rap/templates/python-project/src/create_output.py.template` | `src/PROJECT_NAME_UNDERSCORE/create_output.py` |
-| `plugins/rap/templates/python-project/data/README.md.template` | `data/README.md` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/python-project/pyproject.toml.template` | `pyproject.toml` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/python-project/README.md.template` | `README.md` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/python-project/.gitignore.template` | `.gitignore` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/python-project/run_pipeline.py.template` | `run_pipeline.py` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/python-project/src/__init__.py.template` | `src/PROJECT_NAME_UNDERSCORE/__init__.py` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/python-project/src/read_data.py.template` | `src/PROJECT_NAME_UNDERSCORE/read_data.py` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/python-project/src/process_data.py.template` | `src/PROJECT_NAME_UNDERSCORE/process_data.py` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/python-project/src/analyse_data.py.template` | `src/PROJECT_NAME_UNDERSCORE/analyse_data.py` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/python-project/src/create_output.py.template` | `src/PROJECT_NAME_UNDERSCORE/create_output.py` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/python-project/data/README.md.template` | `data/README.md` |
 
 ### 5. Execute setup commands
 
@@ -82,6 +82,17 @@ uv sync
 > This creates a virtual environment and installs the project with its dependencies. The resulting `uv.lock` file pins exact versions for reproducibility.
 
 If `uv` is not available on the system, skip and inform the user they can install dependencies manually.
+
+**Initial commit** (only if Git was just initialised in this skill and the repository has no prior commits):
+
+Stage the scaffolded files and create an initial commit using the [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+```bash
+git add -A
+git commit -m "chore: scaffold RAP-compliant Python project"
+```
+
+Do not auto-commit into a pre-existing repository that already has history — in that case, leave the files staged and let the user commit. Any commit you create on the user's behalf during RAP skills **must** follow Conventional Commits (`type(scope): description`, e.g. `feat:`, `fix:`, `docs:`, `test:`, `build:`, `chore:`). This keeps history machine-readable and supports the automated changelogs and semantic versioning expected at Gold RAP (G4).
 
 ### 6. Display summary
 

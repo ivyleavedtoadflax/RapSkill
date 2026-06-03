@@ -71,7 +71,7 @@ For details on RAP maturity levels, see the [NHS RAP Community of Practice](http
 Contributions are welcome. Please follow these guidelines:
 
 1. Create a feature branch from `main`
-2. Make your changes with clear, descriptive commits
+2. Make your changes, writing commit messages in the [Conventional Commits](https://www.conventionalcommits.org/) format (e.g. `feat:`, `fix:`, `docs:`, `test:`, `build:`, `chore:`)
 3. Ensure all code passes `ruff check` and `pytest`
 4. Open a pull request for peer review
 5. At least one reviewer must approve before merging

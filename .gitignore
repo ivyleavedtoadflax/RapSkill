@@ -4,3 +4,6 @@
 # Speckit artifacts
 .specify/
 specs/
+
+# Local demo / scratch scaffolding
+demo/

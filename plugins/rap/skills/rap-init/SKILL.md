@@ -47,14 +47,14 @@ For each template file listed below, read the template from the plugin's templat
 
 | Template Source | Target Path |
 |----------------|-------------|
-| `plugins/rap/templates/r-project/DESCRIPTION.template` | `DESCRIPTION` |
-| `plugins/rap/templates/r-project/README.md.template` | `README.md` |
-| `plugins/rap/templates/r-project/.gitignore.template` | `.gitignore` |
-| `plugins/rap/templates/r-project/R/01_read_data.R.template` | `R/01_read_data.R` |
-| `plugins/rap/templates/r-project/R/02_process_data.R.template` | `R/02_process_data.R` |
-| `plugins/rap/templates/r-project/R/03_analyse_data.R.template` | `R/03_analyse_data.R` |
-| `plugins/rap/templates/r-project/R/04_create_output.R.template` | `R/04_create_output.R` |
-| `plugins/rap/templates/r-project/data/README.md.template` | `data/README.md` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/r-project/DESCRIPTION.template` | `DESCRIPTION` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/r-project/README.md.template` | `README.md` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/r-project/.gitignore.template` | `.gitignore` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/r-project/R/01_read_data.R.template` | `R/01_read_data.R` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/r-project/R/02_process_data.R.template` | `R/02_process_data.R` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/r-project/R/03_analyse_data.R.template` | `R/03_analyse_data.R` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/r-project/R/04_create_output.R.template` | `R/04_create_output.R` |
+| `${CLAUDE_PLUGIN_ROOT}/templates/r-project/data/README.md.template` | `data/README.md` |
 
 Additionally, create the RStudio project file:
 
@@ -97,6 +97,17 @@ Rscript -e "renv::init(bare = TRUE)"
 > Use `bare = TRUE` so renv creates the infrastructure without trying to discover and install packages from the skeleton scripts. The user will add packages incrementally.
 
 If R is not available on the system, skip `renv::init()` and inform the user they should run it manually when R is available.
+
+**Initial commit** (only if Git was just initialised in this skill and the repository has no prior commits):
+
+Stage the scaffolded files and create an initial commit using the [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+```bash
+git add -A
+git commit -m "chore: scaffold RAP-compliant R project"
+```
+
+Do not auto-commit into a pre-existing repository that already has history — in that case, leave the files staged and let the user commit. Any commit you create on the user's behalf during RAP skills **must** follow Conventional Commits (`type(scope): description`, e.g. `feat:`, `fix:`, `docs:`, `test:`, `build:`, `chore:`). This keeps history machine-readable and supports the automated changelogs and semantic versioning expected at Gold RAP (G4).
 
 ### 6. Display summary
 

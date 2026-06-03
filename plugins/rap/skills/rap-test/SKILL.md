@@ -58,7 +58,7 @@ Then stop.
 Check if `tests/testthat.R` already exists. If not:
 
 1. Create directories: `tests/testthat/`
-2. Read the template from `plugins/rap/templates/test/testthat.R.template`
+2. Read the template from `${CLAUDE_PLUGIN_ROOT}/templates/test/testthat.R.template`
 3. Replace `{{PROJECT_NAME}}` with the project name (from DESCRIPTION Package field or directory name)
 4. Write to `tests/testthat.R`
 
@@ -72,7 +72,7 @@ Use Glob to find all `.R` files in `R/`. For each file:
 2. Check if `tests/testthat/test-{filename}.R` already exists
 3. If it exists, **skip it** — never overwrite existing tests
 4. If it does not exist, read the function file to find the first exported function name (look for lines matching `^[a-zA-Z_][a-zA-Z0-9_.]* <- function(`)
-5. Read the skeleton template from `plugins/rap/templates/test/test-skeleton.R.template`
+5. Read the skeleton template from `${CLAUDE_PLUGIN_ROOT}/templates/test/test-skeleton.R.template`
 6. Replace `{{FILE_NAME}}` with the source filename (e.g. `01_read_data.R`)
 7. Replace `{{FUNCTION_NAME}}` with the detected function name (or `my_function` if none found)
 8. Write to `tests/testthat/test-{filename}.R`
@@ -136,7 +136,7 @@ The generated file should contain test functions that:
 5. **Uniqueness checks**: No unexpected duplicates on key columns
 6. **Row count checks**: Data has expected number of rows (within tolerance)
 
-Read the skeleton template from `plugins/rap/templates/test/test-skeleton.R.template` and use the data validation section as the basis, but uncomment and customise the examples based on any R files found in the project.
+Read the skeleton template from `${CLAUDE_PLUGIN_ROOT}/templates/test/test-skeleton.R.template` and use the data validation section as the basis, but uncomment and customise the examples based on any R files found in the project.
 
 Display:
 
@@ -191,7 +191,17 @@ Handle these situations gracefully:
 
 - **Existing test files**: Never overwrite — always skip and list what was skipped.
 
-### 6. RAP context
+### 6. Commit convention
+
+If you commit these changes (now, or when the user asks), use the [Conventional Commits](https://www.conventionalcommits.org/) format — `type(scope): description`. For test infrastructure and skeletons, prefer `test`:
+
+```bash
+git commit -m "test: add testthat infrastructure and skeleton tests"
+```
+
+Consistent commit types keep history machine-readable and underpin the automated changelogs and semantic versioning expected at Gold RAP (G4).
+
+### 7. RAP context
 
 End your response with:
 

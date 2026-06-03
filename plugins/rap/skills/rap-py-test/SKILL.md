@@ -64,7 +64,7 @@ Then stop.
 Check if `tests/conftest.py` already exists. If not:
 
 1. Create directory: `tests/`
-2. Read the template from `plugins/rap/templates/python-test/conftest.py.template`
+2. Read the template from `${CLAUDE_PLUGIN_ROOT}/templates/python-test/conftest.py.template`
 3. Replace `{{PROJECT_NAME}}` and `{{PROJECT_NAME_UNDERSCORE}}` with the actual values
 4. Write to `tests/conftest.py`
 
@@ -78,7 +78,7 @@ Use Glob to find all `.py` files in the package directory (e.g. `src/PROJECT_NAM
 2. Check if `tests/test_{module_name}.py` already exists
 3. If it exists, **skip it** — never overwrite existing tests
 4. If it does not exist, read the source file to find the first function name (look for lines matching `^def [a-zA-Z_][a-zA-Z0-9_]*\(`)
-5. Read the skeleton template from `plugins/rap/templates/python-test/test_skeleton.py.template`
+5. Read the skeleton template from `${CLAUDE_PLUGIN_ROOT}/templates/python-test/test_skeleton.py.template`
 6. Replace `{{FILE_NAME}}` with the source filename (e.g. `read_data.py`)
 7. Replace `{{MODULE_NAME}}` with the module name (e.g. `read_data`)
 8. Replace `{{FUNCTION_NAME}}` with the detected function name (or `my_function` if none found)
@@ -152,7 +152,7 @@ The generated file should contain test functions that:
 5. **Uniqueness checks**: No unexpected duplicates on key columns
 6. **Row count checks**: Data has expected number of rows (within tolerance)
 
-Read the skeleton template from `plugins/rap/templates/python-test/test_skeleton.py.template` and use the `TestDataValidation` class as the basis, but uncomment and customise the examples based on any source files found in the project.
+Read the skeleton template from `${CLAUDE_PLUGIN_ROOT}/templates/python-test/test_skeleton.py.template` and use the `TestDataValidation` class as the basis, but uncomment and customise the examples based on any source files found in the project.
 
 Display:
 
@@ -208,7 +208,17 @@ Handle these situations gracefully:
 
 - **Existing test files**: Never overwrite — always skip and list what was skipped.
 
-### 7. RAP context
+### 7. Commit convention
+
+If you commit these changes (now, or when the user asks), use the [Conventional Commits](https://www.conventionalcommits.org/) format — `type(scope): description`. For test infrastructure and skeletons, prefer `test`:
+
+```bash
+git commit -m "test: add pytest infrastructure and skeleton tests"
+```
+
+Consistent commit types keep history machine-readable and underpin the automated changelogs and semantic versioning expected at Gold RAP (G4).
+
+### 8. RAP context
 
 End your response with:
 

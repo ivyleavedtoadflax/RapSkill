@@ -121,7 +121,7 @@ For each FAIL or PARTIAL check, include specific remediation:
 |-------|-------------|
 | B2 | Run `git init` to initialise version control |
 | B3 | Add reproduction steps under a "How to Run" heading in README.md |
-| B4 | Open a pull request and have a colleague review your code |
+| B4 | Open a pull request and have a colleague review your code. Write commit messages in [Conventional Commits](https://www.conventionalcommits.org/) format (`type(scope): description`) |
 | B5 | Push to GitHub: `git remote add origin <url>` then `git push` |
 | S1 | Run `/rap-py-pipeline` to configure build automation |
 | S5 | Add ruff configuration to `pyproject.toml`: `[tool.ruff]` section with `select = ["E", "F", "W", "I"]` |
