@@ -1,0 +1,143 @@
+"""Flatten analysis results into the variable namespace the publication cites.
+
+The publication (report/report.qmd) is a Quarto document, and every number in
+it is a ``{{< var some.dotted.path >}}`` resolved against
+``report/_variables.yml``. This module writes that file. It decides no figure:
+it reads ``output/results.json``, which your analysis step computed, and gives
+every value in it an address.
+
+Two things this arrangement buys, beyond a number no longer being typed by hand:
+
+*The addresses are checked.* A path that does not exist renders as a visible
+``**?var:the.path**`` rather than the right number -- and Quarto exits zero,
+so a render will not catch it. ``tests/test_report_variables.py`` asserts every
+path the document cites is present here, so a typo fails where a mistyped
+figure in hand-written prose never could.
+
+*The file is a manifest.* It is flat, ordered and committed, so a data refresh
+produces a diff showing exactly which of the publication's figures moved, and
+by how much. Nothing else in the repository offers that view.
+
+Values are *rendered* here rather than in the document. A thousands separator
+or a decimal place is a formatting decision, and a formatting decision made in
+prose is checked by nobody.
+
+Run it directly::
+
+    python -m {{PROJECT_NAME_UNDERSCORE}}.report_variables
+
+or wire it into your pipeline as a stage whose dep is ``output/results.json``
+and whose out is ``report/_variables.yml``.
+"""
+
+import json
+import re
+from pathlib import Path
+
+import yaml
+
+# src/<package>/report_variables.py -> repo root is two parents up from the
+# package directory.
+ROOT = Path(__file__).resolve().parents[2]
+RESULTS = ROOT / "output" / "results.json"
+OUT = ROOT / "report" / "_variables.yml"
+
+# Quarto resolves `{{< var a.b.c >}}` by splitting on dots, and a segment that
+# begins with a digit does not resolve -- it renders the shortcode's own source
+# in that one spot, silently and only there. Years are the obvious case
+# (`totals.region_a.2025`), so every digit-leading segment is prefixed. Every
+# such segment, not only the ones that look like years, because "looks like a
+# year" is a rule that needs revisiting the first time a key is `1_in_5`.
+DIGIT_LEADING_PREFIX = "y"
+
+
+def slug(value) -> str:
+    """One path segment, safe for Quarto's dotted lookup.
+
+    Lowercased, non-alphanumerics collapsed to single underscores, and prefixed
+    with ``y`` if it would otherwise begin with a digit. Raises if a label
+    slugifies to nothing, because an empty segment silently breaks the path.
+    """
+    text = re.sub(r"[^a-z0-9]+", "_", str(value).lower()).strip("_")
+    if not text:
+        raise ValueError(f"{value!r} slugifies to nothing")
+    if text[0].isdigit():
+        text = DIGIT_LEADING_PREFIX + text
+    return text
+
+
+def render(value) -> str:
+    """Format one leaf value for the page, where the choice is testable.
+
+    - ``int``   -> thousands separators (``1234`` -> ``"1,234"``; ``5`` -> ``"5"``)
+    - ``float`` -> one decimal place with separators (``43.0`` -> ``"43.0"``)
+    - anything else -> its string form, unchanged.
+
+    Precision is a house-style decision: change the ``.1f`` here if your
+    publication carries a different number of decimal places, and add
+    field-specific rules (percentages, currency) as your results grow. Deciding
+    it here keeps it in one tested place rather than scattered through prose.
+    """
+    if isinstance(value, bool):
+        return str(value)
+    if isinstance(value, int):
+        return f"{value:,}"
+    if isinstance(value, float):
+        return f"{value:,.1f}"
+    return str(value)
+
+
+def flatten(node, path: str = "") -> dict:
+    """Walk a nested results dict into ``{dotted.path: rendered_value}``.
+
+    Dict keys are slugified; leaf values are rendered. Lists are not supported:
+    a statistical figure has a name, not an index, so give it one in the
+    results structure rather than relying on position.
+    """
+    out: dict[str, str] = {}
+    if isinstance(node, dict):
+        for key, child in node.items():
+            child_path = f"{path}.{slug(key)}" if path else slug(key)
+            out.update(flatten(child, child_path))
+    elif isinstance(node, list):
+        raise ValueError(
+            f"list at {path!r}: name each element in results.json instead of "
+            "relying on its position"
+        )
+    else:
+        out[path] = render(node)
+    return out
+
+
+def _nest(flat: dict) -> dict:
+    """Re-nest ``{dotted.path: value}`` into a tree for readable YAML output."""
+    root: dict = {}
+    for dotted, value in flat.items():
+        cursor = root
+        parts = dotted.split(".")
+        for part in parts[:-1]:
+            cursor = cursor.setdefault(part, {})
+        cursor[parts[-1]] = value
+    return root
+
+
+def build(results: dict) -> dict:
+    """The variable namespace for a results dict (nested, rendered)."""
+    return _nest(flatten(results))
+
+
+def main() -> None:
+    results = json.loads(RESULTS.read_text())
+    namespace = build(results)
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    header = (
+        "# Generated by report_variables.py from output/results.json.\n"
+        "# Do not edit: every value here is the publication's rendering of a\n"
+        "# figure the analysis produced. Change the analysis, not this file.\n"
+    )
+    OUT.write_text(header + yaml.safe_dump(namespace, sort_keys=True, allow_unicode=True))
+    print(f"Wrote {len(flatten(results))} variables to {OUT}")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A citation style for a statistical publication whose sources must be
+  verifiable: numbered markers, and a reference list that prints each source's
+  provenance -- the retrieval time, the byte count and the SHA-256 checksum of
+  the file the figures were computed from.
+
+  Committed rather than referenced by URL. A style fetched at render time would
+  make the reference list depend on a network and on whoever last edited that
+  style, in a repository whose whole claim is that a reader can check the
+  numbers. It is short enough to read, which is the other reason.
+
+  Numeric rather than author-date: a statistical publication's sources are
+  often a handful of publishers, and author-date produces disambiguating
+  letters -- "(Department for Education 2026a)", "(2026b)" -- that carry no
+  meaning to a reader trying to find the document.
+
+  The `note` field is rendered in full and deliberately. It carries the
+  provenance, which is what makes a citation here checkable rather than merely
+  attributed. Populate it from your download manifest (see references.bib), not
+  by hand.
+-->
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0"
+       demote-non-dropping-particle="never" default-locale="en-GB">
+  <info>
+    <title>Numeric with provenance</title>
+    <id>urn:rap:numeric-provenance</id>
+    <category citation-format="numeric"/>
+    <category field="social_science"/>
+    <updated>2024-01-01T00:00:00+00:00</updated>
+    <summary>Numbered citations with retrieval time and checksum, for a statistical publication whose sources must be verifiable.</summary>
+  </info>
+
+  <citation collapse="citation-number">
+    <sort>
+      <key variable="citation-number"/>
+    </sort>
+    <layout prefix="[" suffix="]" delimiter=",">
+      <group delimiter=", ">
+        <text variable="citation-number"/>
+        <text variable="locator" prefix="p. "/>
+      </group>
+    </layout>
+  </citation>
+
+  <bibliography entry-spacing="0" second-field-align="flush">
+    <sort>
+      <key variable="citation-number"/>
+    </sort>
+    <layout suffix=".">
+      <text variable="citation-number" prefix="[" suffix="]"/>
+      <group delimiter=". ">
+        <!-- Publisher as a corporate author: double-brace the name in the
+             .bib so citeproc treats the whole string as one literal name. -->
+        <names variable="author">
+          <name form="long" and="text" delimiter=", "/>
+        </names>
+        <!-- text-case="none" because citeproc otherwise title-cases after a
+             colon, altering the title of the work the citation points at -- a
+             citation a reader could then no longer search for. -->
+        <text variable="title" quotes="true" text-case="none"/>
+        <text variable="URL"/>
+        <!-- Retrieval time, byte count and checksum. -->
+        <text variable="note"/>
+      </group>
+    </layout>
+  </bibliography>
+</style>

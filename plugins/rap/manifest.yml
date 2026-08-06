@@ -1,5 +1,5 @@
 name: rap
-version: 2.0.1
+version: 2.1.0
 description: UK Government Reproducible Analytical Pipelines for R and Python
 author: RapSkill
 tags: [rap, r, python, statistics, reproducibility, government]

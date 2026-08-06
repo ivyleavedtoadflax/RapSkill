@@ -1,0 +1,63 @@
+"""Build the publication's tables.
+
+Every table the publication draws from the data is built by a function here and
+called from the document itself (report/report.qmd), in an executed block that
+names the function and its arguments. Keeping the tables here rather than typed
+into the ``.qmd`` is what makes them move with a data refresh; keeping the
+*call* in the document rather than pre-rendering the table to disk is what lets
+a reader see which figures the table is built from.
+
+Nothing here writes a file. These functions return markdown strings, which the
+document prints with ``#| output: asis``.
+
+This is narrative code's counterpart in ``src/``: short accessors over the
+analysis results, imported back into the document. The formatting a table needs
+(thousands separators, spelled-out labels, rows ordered by size) lives here,
+where it is testable, not in prose.
+"""
+
+import json
+from pathlib import Path
+
+# src/<package>/report_parts.py -> repo root is two parents up.
+ROOT = Path(__file__).resolve().parents[2]
+RESULTS = ROOT / "output" / "results.json"
+
+# A convention for a value a source withholds rather than publishes (e.g. a
+# small count a statistics producer suppresses). A suppressed value is not a
+# zero, and a table that silently printed one would assert a fact the source
+# declined to. Extend this set for your source's codes.
+SUPPRESSED = {"c", "k", "z", "x", ":"}
+
+
+def load_results() -> dict:
+    """The analysis results the document's tables are built from."""
+    return json.loads(RESULTS.read_text())
+
+
+def _fmt_count(value) -> str:
+    """A count for a table cell: separators for a number, the code for a
+    suppressed cell, left alone for anything else."""
+    if isinstance(value, bool):
+        return str(value)
+    if isinstance(value, (int, float)):
+        return f"{value:,}"
+    return str(value)
+
+
+def totals_trend(results: dict, region: str) -> str:
+    """A year-by-year table of count and rate for one region.
+
+    Worked example over the scaffold's ``example_results.json``. Replace it
+    with the tables your publication actually needs -- one function per table,
+    each named for what it shows.
+    """
+    region_data = results["totals"][region]
+    lines = [
+        "| Year | Count | Rate per 10,000 |",
+        "|------|------:|----------------:|",
+    ]
+    for year in sorted(region_data):
+        row = region_data[year]
+        lines.append(f"| {year} | {_fmt_count(row['count'])} | {row['rate']} |")
+    return "\n".join(lines)

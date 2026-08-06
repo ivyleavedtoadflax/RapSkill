@@ -1,0 +1,73 @@
+"""Guard that every citation and cross-reference in the publication resolves.
+
+Neither thing this checks fails a render. A citation key with no bibliography
+entry produces ``[WARNING] Citeproc: citation x not found`` and a rendered
+``**x?**``, and the render exits zero. A footnote marker with no definition
+renders as literal text, ``[^label]``, in the published document. Both exit
+zero, so this is the guard -- and it reads the .qmd source rather than rendered
+output, which keeps it running before anything is rendered.
+
+No network, nothing rendered: this reads two files.
+"""
+
+import re
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+QMD = ROOT / "report" / "report.qmd"
+BIB = ROOT / "report" / "references.bib"
+
+# [@key], [@a; @b], [@x, p. 1] -- every key in a citation group.
+CITATION = re.compile(r"\[(@[^\]]+)\]")
+KEY = re.compile(r"@([A-Za-z][\w:.#$%&+?<>~/-]*)")
+BIB_ENTRY = re.compile(r"^@\w+\{([^,]+),", re.M)
+
+# A footnote marker `[^label]` versus its definition `[^label]: text`. A
+# definition's `]` is always followed by `:`; a marker's never is.
+FOOTNOTE_MARKER = re.compile(r"\[\^([^\]]+)\](?!:)")
+FOOTNOTE_DEF = re.compile(r"^\[\^([^\]]+)\]:", re.M)
+
+# Pandoc parses citations and footnotes in prose, not inside fenced code blocks
+# or HTML comments. Strip both before scanning so example markup written into a
+# comment for a reader is not mistaken for a real reference.
+FENCE = re.compile(r"^```.*?^```", re.M | re.S)
+COMMENT = re.compile(r"<!--.*?-->", re.S)
+
+
+def _prose(text: str) -> str:
+    return COMMENT.sub("", FENCE.sub("", text))
+
+
+def _cited_keys(text: str) -> set[str]:
+    keys: set[str] = set()
+    for group in CITATION.findall(text):
+        keys.update(KEY.findall(group))
+    return keys
+
+
+def test_every_citation_key_has_a_bib_entry():
+    if not QMD.exists() or not BIB.exists():
+        return
+    cited = _cited_keys(_prose(QMD.read_text()))
+    defined = set(BIB_ENTRY.findall(BIB.read_text()))
+    missing = sorted(cited - defined)
+    assert not missing, (
+        "these [@keys] in report.qmd have no entry in references.bib (they "
+        f"would render as **key?** and Quarto would exit zero): {missing}"
+    )
+
+
+def test_every_footnote_marker_has_a_definition():
+    if not QMD.exists():
+        return
+    text = _prose(QMD.read_text())
+    markers = set(FOOTNOTE_MARKER.findall(text))
+    definitions = set(FOOTNOTE_DEF.findall(text))
+    undefined = sorted(markers - definitions)
+    unused = sorted(definitions - markers)
+    assert not undefined, (
+        f"footnote markers with no definition (render as literal text): {undefined}"
+    )
+    assert not unused, (
+        f"footnote definitions nothing points at (dead weight): {unused}"
+    )
