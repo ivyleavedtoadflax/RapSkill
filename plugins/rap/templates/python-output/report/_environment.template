@@ -1,0 +1,13 @@
+# Quarto's Jupyter engine executes this document's code blocks, and by default
+# it resolves an interpreter of its own -- often one that knows nothing about
+# your project's package. Every table and figure in this publication is
+# executed code (see report.qmd), so the interpreter is named here rather than
+# discovered.
+#
+# Repo-relative, not absolute. This file sits in report/, so the path is
+# resolved from there. An absolute path would bake one machine's filesystem
+# into a committed file.
+#
+# This assumes a uv project with its virtualenv at the repo root (.venv/). If
+# yours lives elsewhere, point this at that interpreter instead.
+QUARTO_PYTHON=../.venv/bin/python

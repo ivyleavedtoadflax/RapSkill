@@ -49,7 +49,7 @@ This installs 10 RAP skill files into your project, making them available as sla
 |---------|-------------|
 | `/rap-py-init [name]` | Scaffold a RAP-compliant Python project with `src/` layout, `pyproject.toml`, and uv dependency management |
 | `/rap-py-check` | Audit your Python project against the three UK government RAP maturity levels (Baseline, Silver, Gold) |
-| `/rap-py-output <type>` | Generate accessible statistical outputs: `spreadsheet` (gptables), `charts` (matplotlib GOV.UK theme), `report` (Jupyter notebook or Quarto) |
+| `/rap-py-output <type>` | Generate accessible statistical outputs: `spreadsheet` (gptables), `charts` (matplotlib GOV.UK theme), `report` (Jupyter notebook, or a reproducible Quarto publication where no number is typed by hand — figures interpolated from analysis outputs, tables built by executed code, citations carrying provenance, plus guard tests) |
 | `/rap-py-test` | Set up pytest infrastructure and generate test skeletons for existing Python functions |
 | `/rap-py-pipeline [type]` | Configure build automation: `make` (default, Makefile) or `dvc` (for complex data pipelines) |
 

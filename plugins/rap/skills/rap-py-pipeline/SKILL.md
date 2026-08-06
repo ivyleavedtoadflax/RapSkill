@@ -20,6 +20,10 @@ This skill offers three tiers of automation:
 2. **`Makefile`** — Dependency-aware build automation (default, recommended for most projects)
 3. **DVC** — Full pipeline + data versioning (for complex projects with large datasets)
 
+If the project has a reproducible Quarto publication (`report/report.qmd`, from
+`/rap-py-output report quarto`), the Makefile or DVC pipeline also gains stages
+that regenerate its variable namespace and render it (see step 5.5).
+
 ### 1. Parse subcommand
 
 Check `$ARGUMENTS` for a subcommand:
@@ -239,6 +243,79 @@ DVC adds value when your project has:
 
 For simpler pipelines, the Makefile approach (`/rap-py-pipeline make`) is sufficient.
 ```
+
+### 5.5 Report publication stages (Quarto)
+
+After generating the Makefile or `dvc.yaml`, check whether the project has a
+reproducible Quarto publication — a `report/report.qmd` (scaffolded by
+`/rap-py-output report quarto`). If it does, add two more stages so the
+publication is built by the pipeline rather than by remembering to render it.
+If there is no `report/report.qmd`, skip this step silently.
+
+These stages assume the analysis writes `output/results.json` — the figures the
+publication interpolates. The Quarto scaffold ships an example one; in a real
+project the analysis (or output) step should serialise its results there.
+
+**For the Makefile**, append:
+
+```makefile
+# -- Publication (Quarto) ------------------------------------------------------
+# Present because the project has a Quarto publication (report/report.qmd).
+# `quarto render report/` renders the DIRECTORY, not the file: rendering the
+# file directly skips _variables.yml and every {{< var >}} figure fails to
+# resolve. Quarto is a separate CLI (not a Python dependency); install it from
+# https://quarto.org/docs/get-started/.
+REPORT_DIR = report
+
+$(REPORT_DIR)/_variables.yml: $(SRC_DIR)/report_variables.py $(OUTPUT_DIR)/results.json
+	$(PYTHON) -m {{PROJECT_NAME_UNDERSCORE}}.report_variables
+
+$(REPORT_DIR)/report.md: $(REPORT_DIR)/report.qmd $(REPORT_DIR)/_variables.yml $(REPORT_DIR)/references.bib $(SRC_DIR)/report_parts.py
+	quarto render $(REPORT_DIR)
+
+report: $(REPORT_DIR)/report.md  ## Render the reproducible publication
+```
+
+Add `report` to the `.PHONY` line. Leave `all` targeting `summary.csv` by
+default; mention the user can make the publication part of `all` with
+`all: $(OUTPUT_DIR)/summary.csv report`.
+
+**For `dvc.yaml`**, append these stages:
+
+```yaml
+  report_vars:
+    # The variable namespace the publication interpolates every figure from.
+    # cache: false so a data refresh shows up as a git diff naming which
+    # figures moved, and CI can read it without a DVC remote.
+    cmd: python -m {{PROJECT_NAME_UNDERSCORE}}.report_variables
+    deps:
+      - src/{{PROJECT_NAME_UNDERSCORE}}/report_variables.py
+      - output/results.json
+    outs:
+      - report/_variables.yml:
+          cache: false
+
+  report_render:
+    # `quarto render report/` -- the directory, not the file. Rendering the
+    # file directly skips _variables.yml and every figure fails to resolve.
+    # Quarto is a separate CLI, not a Python dep -- install it separately.
+    cmd: quarto render report/
+    deps:
+      - report/report.qmd
+      - report/_variables.yml
+      - report/references.bib
+      - report/numeric-provenance.csl
+      - src/{{PROJECT_NAME_UNDERSCORE}}/report_parts.py
+    outs:
+      - report/report.md:
+          cache: false
+```
+
+Note in your summary that the guard tests (`tests/test_report_variables.py`,
+`tests/test_citations.py`) belong in CI or `make test`, not in the build graph:
+Quarto fails variable and citation lookups silently and exits zero, so the guard
+against a broken publication is the test suite, which reads the `.qmd` before
+anything renders.
 
 ### 6. Update pyproject.toml
 

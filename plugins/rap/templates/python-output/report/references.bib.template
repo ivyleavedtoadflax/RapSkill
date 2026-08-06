@@ -1,0 +1,31 @@
+% References for the publication, in BibTeX.
+%
+% GENERATE THIS FILE, do not hand-maintain it. Each entry's `note` carries the
+% retrieval time, byte count and SHA-256 of the downloaded source -- facts
+% about a download, not prose. A hand-kept copy of them is exactly how a
+% reference list goes stale: the number is right when typed and wrong after the
+% next data refresh.
+%
+% The recommended pattern (see report_parts.py and the skill guidance): your
+% download step writes a manifest recording, for every file it fetches, the
+% URL, HTTP status, byte count, SHA-256 and retrieval timestamp. A bib step
+% then joins that manifest to a small registry of who published each work and
+% what it is called, and writes this file. Nobody types the checksums.
+%
+% The entries below are a worked example of the shape. Replace them, and wire
+% up generation, before you publish.
+%
+% Two rules the numeric-provenance.csl style depends on:
+%   1. Double-brace a corporate author -- {{Department for Education}} -- so
+%      citeproc treats it as one literal name, not "Education, D.".
+%   2. Escape BibTeX's markup characters in titles: & % $ # _ { }. An
+%      unescaped one silently truncates the field or corrupts the entry.
+
+@online{example-source-2024,
+  author  = {{Office for National Statistics}},
+  title   = {{Example statistical release, 2024}},
+  url     = {https://www.example.gov.uk/statistics/example-2024},
+  urldate = {2024-01-15},
+  year    = {2024},
+  note    = {Retrieved 2024-01-15T09:30:00+00:00. 128,540 bytes, SHA-256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855}
+}

@@ -1,0 +1,13 @@
+# Figures and the embedded HTML are the report outputs no test reads, so they
+# do not belong in git. The HTML in particular: with embed-resources it is a
+# single file carrying every figure inline as base64, which git would store in
+# full on every data refresh and no reviewer could read a diff of. Track them
+# with DVC, or regenerate them from the pipeline, rather than committing them.
+#
+# The gfm output (report.md) is deliberately NOT ignored: it is the format the
+# tests parse and the review diff reads, so it stays in git.
+/figures
+/report.html
+
+/.quarto/
+**/*.quarto_ipynb

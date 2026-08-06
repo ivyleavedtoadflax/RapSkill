@@ -1,0 +1,17 @@
+{
+  "totals": {
+    "region_a": {
+      "2023": { "count": 1234, "rate": 45.6 },
+      "2024": { "count": 1210, "rate": 44.1 },
+      "2025": { "count": 1188, "rate": 43.0 }
+    },
+    "region_b": {
+      "2023": { "count": 512, "rate": 61.2 },
+      "2024": { "count": 498, "rate": 59.4 },
+      "2025": { "count": 470, "rate": 56.1 }
+    }
+  },
+  "comparisons": {
+    "rate_ratio_b_to_a": 1.3
+  }
+}

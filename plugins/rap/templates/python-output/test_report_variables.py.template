@@ -1,0 +1,88 @@
+"""Guard the variable namespace the publication interpolates from.
+
+Every number in report/report.qmd is a ``{{< var some.dotted.path >}}``
+resolved against report/_variables.yml. Quarto does NOT fail a render on an
+unresolved path -- it prints ``**?var:the.path**`` and exits zero -- so nothing
+downstream stops a bad address reaching a published document. These tests are
+that guard, and they read the ``.qmd`` source before anything is rendered, so a
+bad path fails while it is still being written.
+
+No network, nothing rendered: this reads the .qmd and the generated YAML.
+"""
+
+import re
+from pathlib import Path
+
+import pytest
+import yaml
+
+from {{PROJECT_NAME_UNDERSCORE}}.report_variables import build, flatten, render, slug
+
+ROOT = Path(__file__).resolve().parents[1]
+QMD = ROOT / "report" / "report.qmd"
+VARS = ROOT / "report" / "_variables.yml"
+
+# `{{< var a.b.c >}}` -- capture the dotted path.
+VAR = re.compile(r"\{\{<\s*var\s+([A-Za-z0-9_.]+)\s*>\}\}")
+
+# Quarto expands shortcodes in prose only: not inside fenced code blocks (it
+# leaves them literal) and not inside HTML comments (they are not output). So
+# neither should this guard require them -- strip both before scanning, or an
+# example shortcode written into a comment for a reader would be demanded of
+# the namespace.
+FENCE = re.compile(r"^```.*?^```", re.M | re.S)
+COMMENT = re.compile(r"<!--.*?-->", re.S)
+
+
+def _prose(text: str) -> str:
+    return COMMENT.sub("", FENCE.sub("", text))
+
+
+def _resolve(namespace: dict, dotted: str):
+    cursor = namespace
+    for part in dotted.split("."):
+        if not isinstance(cursor, dict) or part not in cursor:
+            return None
+        cursor = cursor[part]
+    return cursor
+
+
+class TestSlug:
+    def test_a_segment_never_begins_with_a_digit(self):
+        # Quarto's dotted lookup silently fails on a numeric first character.
+        assert slug(2025) == "y2025"
+        assert slug("2022_23") == "y2022_23"
+
+    def test_punctuation_and_case_collapse(self):
+        assert slug("Own provision (by the LA)") == "own_provision_by_the_la"
+        assert slug("Voluntary/third sector") == "voluntary_third_sector"
+
+    def test_a_label_that_slugifies_to_nothing_is_refused(self):
+        with pytest.raises(ValueError, match="slugifies to nothing"):
+            slug("---")
+
+
+class TestRender:
+    def test_counts_carry_thousands_separators(self):
+        assert render(1234) == "1,234"
+        assert render(5) == "5"
+
+    def test_floats_carry_one_decimal(self):
+        assert render(43.0) == "43.0"
+        assert render(1.3) == "1.3"
+
+
+class TestNamespaceResolves:
+    """Every path the document cites must exist in the generated namespace."""
+
+    def test_every_var_in_the_qmd_resolves(self):
+        if not QMD.exists() or not VARS.exists():
+            pytest.skip("report/report.qmd or report/_variables.yml not generated yet")
+        namespace = yaml.safe_load(VARS.read_text()) or {}
+        cited = sorted(set(VAR.findall(_prose(QMD.read_text()))))
+        missing = [path for path in cited if _resolve(namespace, path) is None]
+        assert not missing, (
+            "these {{< var >}} paths in report.qmd resolve to nothing in "
+            f"_variables.yml (they would render as **?var:...** and Quarto would "
+            f"exit zero): {missing}"
+        )
